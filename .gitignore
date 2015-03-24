@@ -1,12 +1,28 @@
-*.class
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
 
-# Mobile Tools for Java (J2ME)
-.mtj.tmp/
+# Precompiled Headers
+*.gch
+*.pch
 
-# Package Files #
-*.jar
-*.war
-*.ear
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
 
-# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
-hs_err_pid*
+# Fortran module files
+*.mod
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
