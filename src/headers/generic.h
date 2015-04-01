@@ -20,9 +20,9 @@
 #include <bitset>
 #include <numeric>
 
-typedef unsigned long long ull;
-typedef std::pair<ull,ull> key_value;
-typedef ull key;
-typedef ull value;
+typedef int64_t ll;
+typedef std::pair<ll,ll> key_value;
+typedef ll t_key;
+typedef ll t_value;
 
 #endif

@@ -3,13 +3,14 @@
 
 #include "generic.h"
 #include "util.h"
+#include "thread_pool.h"
 #include <bangdb/tableenv.h>
 #include <bangdb/database.h>
 
 using namespace std;
 using namespace bangdb;
 
-class Database{
+class Database {
 private:
     static const string DB_NAME;
     static const string TABLE_PREFIX;
@@ -19,36 +20,32 @@ private:
     string dbPath;
     string logPath;
 
+    int num_threads;
+
     database *db;
     table *tbl;
-    vector<connection*> db_conns;
     table_env db_properties;
+    ThreadPool thread_pool;
 
-    void open_connections();
-    void close_connections();
-    vector<value> get(int, vector<key>&);
-    void put(int, vector<key_value>&);
-    void remove(int, vector<key>&);
-
+    vector<vector<t_value> > batch_get(vector<t_key>&);
+    void batch_put(vector<key_value>&);
+    void batch_remove(vector<t_key>&);
 public:
     enum TransactionMode { DISABLED, ENABLED };
-    
-    Database(string, TransactionMode transMode = ENABLED);
-    Database(string, string, TransactionMode transMode = ENABLED);
+
+    Database(string, TransactionMode transMode = DISABLED, int num_threads = NUM_THREADS);
+    Database(string, string, TransactionMode transMode = DISABLED, int num_threads = NUM_THREADS);
 
     void use_table(int);
     void close_table();
     void close_database();
 
-    vector<value> get(key);
-    vector<value> get(vector<key>&);
+    vector<t_value> get(t_key);
+    vector<t_value> get(vector<t_key>&);
     void put(key_value);
     void put(vector<key_value>&);
-    void remove(key);
-    void remove(vector<key>&);
-    //bool update(int, vector<int>&);
-
-    void setNumberOfThreads(int);
+    void remove(t_key);
+    void remove(vector<t_key>&);
 
     ~Database();
 };
