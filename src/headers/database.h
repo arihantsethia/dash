@@ -33,15 +33,15 @@ private:
 public:
     enum TransactionMode { DISABLED, ENABLED };
 
-    Database(string, TransactionMode transMode = DISABLED, int num_threads = NUM_THREADS);
-    Database(string, string, TransactionMode transMode = DISABLED, int num_threads = NUM_THREADS);
+    Database(string, TransactionMode transMode = ENABLED, int num_threads = NUM_THREADS);
+    Database(string, string, TransactionMode transMode = ENABLED, int num_threads = NUM_THREADS);
 
     void use_table(int);
     void close_table();
     void close_database();
 
     vector<t_value> get(t_key);
-    vector<t_value> get(vector<t_key>&);
+    vector<vector<t_value> > get(vector<t_key>&);
     void put(key_value);
     void put(vector<key_value>&);
     void remove(t_key);
