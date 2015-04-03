@@ -16,4 +16,10 @@ static const string DB_CONFIG = PATH + PATH_SEPERATOR + "db_config";
 
 static const string GENOME_PATH = PATH + PATH_SEPERATOR + "genome";
 
+static const string INDEX_PROP_FILE = PATH + PATH_SEPERATOR + "index.prop";
+static const string SEED_LEN_PROP = "SEED_LEN";
+static const int SEED_LEN = 20;
+
+static const int JOB_LEN = 10000000;
+
 #endif
