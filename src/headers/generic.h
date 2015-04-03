@@ -19,6 +19,7 @@
 #include <list>
 #include <bitset>
 #include <numeric>
+#include <fstream>
 #include <sys/types.h>
 #include <sys/stat.h>
 

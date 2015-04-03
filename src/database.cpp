@@ -30,7 +30,10 @@ void Database::close_table() {
 
 void Database::put(key_value data) {
     vector<key_value> v(1, data);
-    //batch_put(v);
+    thread_pool.enqueue([](Database* db, vector<key_value>* data, size_t start, size_t end) {
+            db->batch_put(data, start, end);
+            return 0;
+        }, this, &v, 0, 1).get();
 }
 
 void Database::put(vector<key_value>& data) {
