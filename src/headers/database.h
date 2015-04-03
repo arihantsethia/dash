@@ -27,9 +27,9 @@ private:
     table_env db_properties;
     ThreadPool thread_pool;
 
-    vector<vector<t_value> > batch_get(vector<t_key>&);
-    void batch_put(vector<key_value>&);
-    void batch_remove(vector<t_key>&);
+    void batch_get(vector<t_key>*, size_t, size_t, vector<vector<t_value> >*);
+    void batch_put(vector<key_value>*, size_t, size_t);
+    void batch_remove(vector<t_key>*, size_t, size_t);
 public:
     enum TransactionMode { DISABLED, ENABLED };
 
@@ -50,15 +50,4 @@ public:
     ~Database();
 };
 
-/*
-class DatabaseException: public exception
-{
-private:
-    string message;
-public:
-    virtual const char* what() const throw(){
-        return "My exception happened";
-    }
-};
-*/
 #endif

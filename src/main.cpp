@@ -3,23 +3,23 @@
 
 using namespace std;
 
-void arihant_func(){/*
+void arihant_func(){
 	Database a("tst");
 	a.use_table(1);
 	vector<key_value> s;
 	vector<t_value> k;
-	for(int i=1;i<50;i++){
+	for(int i=1;i<25000000;i++){
 		s.push_back(make_pair(i,2*i));
 		k.push_back(i);
 	}
+	cout<<"done"<<endl;
 	a.put(s);
-	a.put(s);
-	a.remove(k[0]);
-	vector<t_value> res = a.get(k[0]);
-	for(auto r:res){
-		cout<<r<<" ";
-	}
-	cout<<endl;*/
+	cout<<"write finished1"<<endl;
+	//a.put(s);
+	cout<<"write finished"<<endl;
+	cout<<"get started"<<endl;
+	vector<vector<t_value> >&& res = a.get(k);
+	cout<<res.size()<<endl;
 }
 
 int main(){
