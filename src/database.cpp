@@ -1,24 +1,12 @@
 #include "headers/database.h"
 
-const int Database::NUM_THREADS = 8;
-const string Database::DB_NAME = "dash_db";
-const string Database::TABLE_PREFIX = "index_chromosome_";
-const string Database::CONFIG = "config";
-
-Database::Database(string dbPath, TransactionMode transMode, int num_threads) : dbPath(dbPath), thread_pool(num_threads), num_threads(num_threads)  {
+Database::Database(string dbPath, int num_threads, string configPath, string logPath, TransactionMode transMode) : thread_pool(num_threads), num_threads(num_threads) {
     if (transMode == ENABLED) {
-        db = new database(cstr(DB_NAME), cstr(CONFIG), DB_OPTIMISTIC_TRANSACTION, cstr(dbPath));
+        db = new database(cstr(DB_NAME), cstr(configPath), DB_OPTIMISTIC_TRANSACTION, cstr(dbPath), cstr(logPath));
     } else {
-        db = new database(cstr(DB_NAME), cstr(CONFIG), DB_TRANSACTION_NONE, cstr(dbPath));
+        db = new database(cstr(DB_NAME), cstr(configPath), DB_TRANSACTION_NONE, cstr(dbPath), cstr(logPath));
     }
-}
-
-Database::Database(string dbPath, string logPath, TransactionMode transMode, int num_threads) : dbPath(dbPath), logPath(logPath), thread_pool(num_threads), num_threads(num_threads) {
-    if (transMode == ENABLED) {
-        db = new database(cstr(DB_NAME), cstr(CONFIG), DB_OPTIMISTIC_TRANSACTION, cstr(dbPath), cstr(logPath));
-    } else {
-        db = new database(cstr(DB_NAME), cstr(CONFIG), DB_TRANSACTION_NONE, cstr(dbPath), cstr(logPath));
-    }
+    tbl = NULL;
 }
 
 void Database::close_database() {
@@ -28,6 +16,7 @@ void Database::close_database() {
 }
 
 void Database::use_table(int id) {
+    close_table();
     if ((tbl = db->gettable(cstr(TABLE_PREFIX + istr(id)), OPENCREATE)) == NULL) {
         cout << "throw exception table" << endl;
     }

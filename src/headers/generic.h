@@ -19,10 +19,15 @@
 #include <list>
 #include <bitset>
 #include <numeric>
+#include <sys/types.h>
+#include <sys/stat.h>
+
+using namespace std;
 
 typedef unsigned long long ull;
-typedef std::pair<ull, ull> key_value;
+typedef pair<ull, ull> key_value;
 typedef ull t_key;
 typedef ull t_value;
+
 
 #endif

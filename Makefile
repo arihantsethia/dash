@@ -67,7 +67,10 @@ debug: export BUILD_PATH := build/debug
 debug: export BIN_PATH := bin/debug
 install: export BIN_PATH := bin/release
 
-export BANGDB_PATH := config/bangdb.config
+export DASH_FILES := dash_files
+export DB_CONFIG := db_config
+export DB_CONFIG_FILE := bangdb.config
+
 # Find all source files in the source directory, sorted by most
 # recently modified
 SOURCES = $(shell find $(SRC_PATH)/ -name '*.$(SRC_EXT)' -printf '%T@\t%p\n' \
@@ -148,8 +151,9 @@ dirs:
 	@echo "Creating directories"
 	@mkdir -p $(dir $(OBJECTS))
 	@mkdir -p $(BIN_PATH)
-	@mkdir -p $(BIN_PATH)/config
-	@cp $(BANGDB_PATH) $(BIN_PATH)/$(BANGDB_PATH)
+	@mkdir -p $(BIN_PATH)/$(DASH_FILES)
+	@mkdir -p $(BIN_PATH)/$(DASH_FILES)/$(DB_CONFIG)
+	@cp $(DB_CONFIG)/$(DB_CONFIG_FILE) $(BIN_PATH)/$(DASH_FILES)/$(DB_CONFIG)/$(DB_CONFIG_FILE)
 
 # Installs to the set path
 .PHONY: install
