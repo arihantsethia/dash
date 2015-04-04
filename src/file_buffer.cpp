@@ -1,5 +1,5 @@
 #include "headers/file_buffer.h"
-//TODO : see if buf initialization with ' ' is fine
+
 FileBuffer::FileBuffer(string file_path, size_t len) : len(len), file_path(file_path) {
     s = 0;
     e = len - 1;
@@ -22,10 +22,15 @@ FileBuffer::~FileBuffer() {
     }
 }
 bool FileBuffer::has_next() {
-    return !fin;
+    return !fin.eof();
 }
 //TODO : optimize file IO by using buffered reader.
 string FileBuffer::next() {
+    // if(filebuf_pos == FILEBUF_SIZE) {
+        
+    // }
+
+
     string seed(len, ' ');
     for (int i = s; i <= e; ++i) {
         seed[i - s] = buf[i % len];

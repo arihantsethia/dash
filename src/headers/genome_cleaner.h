@@ -5,7 +5,7 @@
 #include "util.h"
 #include "constants.h"
 
-class GeneomeCleaner {
+class GenomeCleaner {
 private:
     static const string CHROMOSOME_PREFIX;
     static const int BUFFER_SIZE;
@@ -16,7 +16,7 @@ private:
 
     string chromosome_file_path(int id);
 public:
-    GeneomeCleaner(string genome_file, string genome_dir = GENOME_PATH);
+    GenomeCleaner(string genome_file, string genome_dir = GENOME_PATH);
 
     void clean();
 };

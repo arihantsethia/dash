@@ -10,7 +10,7 @@ class GenomeIndexWriter : private GenomeIndex
 {
 private:
 public:
-    GenomeIndexWriter(int seed_len);
+    GenomeIndexWriter(int seed_len = SEED_LEN);
     void write_index(string filename);
     ~GenomeIndexWriter();
     

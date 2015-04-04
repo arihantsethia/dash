@@ -1,11 +1,11 @@
 #include "headers/genome_cleaner.h"
 
-const string GeneomeCleaner::CHROMOSOME_PREFIX = "chromosome_";
-const int GeneomeCleaner::BUFFER_SIZE = 50 * 1024 * 1024;
+const string GenomeCleaner::CHROMOSOME_PREFIX = "chromosome_";
+const int GenomeCleaner::BUFFER_SIZE = 50 * 1024 * 1024;
 
-GeneomeCleaner::GeneomeCleaner(string genome_file, string genome_dir): genome_dir(genome_dir), genome_file(genome_file) {
+GenomeCleaner::GenomeCleaner(string genome_file, string genome_dir): genome_dir(genome_dir), genome_file(genome_file) {
 }
-void GeneomeCleaner::clean() {
+void GenomeCleaner::clean() {
     ifstream i_file (genome_file);
     ofstream o_file;
     bool skip = false;
@@ -53,6 +53,6 @@ void GeneomeCleaner::clean() {
     }
 }
 
-string GeneomeCleaner::chromosome_file_path(int id) {
+string GenomeCleaner::chromosome_file_path(int id) {
     return genome_dir + PATH_SEPERATOR + CHROMOSOME_PREFIX + pad(id, 3);
 }
