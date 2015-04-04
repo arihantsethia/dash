@@ -11,7 +11,7 @@ void Hash::set_length(int len) {
     length = len;
 }
 
-t_value Hash::get_hash_value(string s) {
+t_value Hash::get_hash(string s) {
     if (s.length() != length || !is_valid_dna(s)) {
         cout << "Throw some error" << endl;
     }

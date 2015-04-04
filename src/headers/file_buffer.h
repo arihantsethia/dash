@@ -6,7 +6,7 @@ class FileBuffer
 {
 private:
     string file_path;
-    string buf;
+    char* buf;
     size_t s, e;
     size_t len;
     ifstream fin;

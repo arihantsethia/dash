@@ -2,6 +2,7 @@
 #define GENOME_INDEX
 
 #include "database.h"
+#include "hash.h"
 
 class GenomeIndex {
 protected:

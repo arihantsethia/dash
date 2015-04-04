@@ -1,11 +1,14 @@
 #include "headers/file_buffer.h"
 //TODO : see if buf initialization with ' ' is fine
-FileBuffer::FileBuffer(string file_path, size_t len = SEED_LEN) : len(len), buf(len, ' '), file_path(file_path) {
+FileBuffer::FileBuffer(string file_path, size_t len) : len(len), file_path(file_path) {
     s = 0;
-    e = -1;
+    e = len - 1;
+
+    buf = new char[len];
 
     try {
         fin.open(file_path);
+        fin.read(buf, len);
     }
     catch (ifstream::failure e) {
         cerr << "Exception in file opening:" << file_path << endl;
@@ -13,47 +16,29 @@ FileBuffer::FileBuffer(string file_path, size_t len = SEED_LEN) : len(len), buf(
 }
 
 FileBuffer::~FileBuffer() {
-    try {
-        if(fin.is_open()) {
-            fin.close();
-        }
-    }
-    catch (ifstream::failure e) {
-        cerr << "Exception in file closing:" << file_path << endl;
+    delete[] buf;
+    if (fin.is_open()) {
+        fin.close();
     }
 }
-//TODO : correct has_next() function
 bool FileBuffer::has_next() {
-    return !fin.eof();
+    return !fin;
 }
 //TODO : optimize file IO by using buffered reader.
-//TODO : correct next() function
 string FileBuffer::next() {
-    string seed(len,' '); //check if ' ' is valid
-    int idx = 0;
-    char c;
+    string seed(len, ' ');
+    for (int i = s; i <= e; ++i) {
+        seed[i - s] = buf[i % len];
+    }
+
     try {
-        while (!fin.eof() && idx != len) {
-            fin.get(c);
-            seed[idx] = c;
-            idx++;
-
-            e++;
-            buf[e % len] = c;
-            if (e - s == 5) s++;
-        }
-
-        //check if seed is indeed full
-        //if seed is not full, use the most recent chars from buffer
-        if (idx != len) {
-            for (int b = s; !(idx == len || b > e); ++b, ++idx) {
-                seed[idx] = buf[b % len];
-            }
-        }
-
-        return seed;
+        e++;
+        fin.get(buf[e % len]);
+        if (e - s == len) s++;
     }
     catch (ifstream::failure e) {
         cerr << "Exception in file IO:" << file_path << endl;
     }
+
+    return seed;
 }

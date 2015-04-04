@@ -1,6 +1,6 @@
-#include "header/index_properties.h"
+#include "headers/index_properties.h"
 
-IndexProperties::IndexProperties(string index_prop_file = INDEX_PROP_FILE) : index_prop_file(index_prop_file) {
+IndexProperties::IndexProperties(string index_prop_file) : index_prop_file(index_prop_file) {
     read_file();
 }
 
@@ -28,7 +28,7 @@ void IndexProperties::read_file() {
 void IndexProperties::write_file() {
     ofstream fout;
     try {
-        fout.open(index_prop_file, ios_base::trunc)
+        fout.open(index_prop_file, ios_base::trunc);
         for (auto& e : prop_map) {
             fout << e.first << "\t" << e.second << endl;
         }

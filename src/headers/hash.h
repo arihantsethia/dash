@@ -13,7 +13,7 @@ public:
     Hash(int);
     ~Hash();
     void set_length(int);
-    t_value get_hash_value(string);
-    string get_value(t_value);
+    t_key get_hash(string);
+    string get_value(t_key);
 };
 #endif

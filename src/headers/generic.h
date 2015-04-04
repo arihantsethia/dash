@@ -18,6 +18,7 @@
 #include <unordered_map>
 #include <set>
 #include <cstring>
+#include <cassert>
 #include <list>
 #include <bitset>
 #include <numeric>
