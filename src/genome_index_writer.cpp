@@ -14,6 +14,7 @@ void GenomeIndexWriter::write_index(string filename) {
     FileBuffer fb(filename);
     string seed;
     t_value pos = 0;
+    int x;
     vector<key_value> data;
     while (fb.has_next()) {
         data.clear();
@@ -24,6 +25,8 @@ void GenomeIndexWriter::write_index(string filename) {
             data.push_back(make_pair(key, pos));
             pos++;
         }
+        cout<<x++<<"Inserting : "<<pos<<endl;
         db.put(data);
+        cout<<"Done"<<endl;
     }
 }
