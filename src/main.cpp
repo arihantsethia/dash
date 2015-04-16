@@ -15,15 +15,19 @@ void initialize_dash_dirs() {
 }
 
 void arihant_func() {
+    GenomeCleaner g("chr1.fa");
+    g.clean();
 }
 
 void shobhit_func(string filename) {
+    cout<<filename<<endl;
     GenomeIndexWriter g;
     g.write_index(filename);
 }
 int main(int argc, char *argv[]) {
     initialize_dash_dirs();
-    // arihant_func();
-    shobhit_func(argv[1]);
+    //arihant_func();
+    //cout<<"Cleaned"<<endl;
+    shobhit_func(GENOME_PATH+PATH_SEPERATOR+"chromosome_001");
     return 0;
 }

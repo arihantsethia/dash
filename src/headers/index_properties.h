@@ -1,5 +1,6 @@
 #ifndef INDEX_PROPERTIES
 #define INDEX_PROPERTIES
+
 #include "util.h"
 #include "constants.h"
 
@@ -16,4 +17,5 @@ public:
     ~IndexProperties();
 
 };
+
 #endif

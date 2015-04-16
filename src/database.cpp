@@ -1,16 +1,18 @@
 #include "headers/database.h"
 
-Database::Database(string dbPath, int num_threads, string configPath, string logPath, TransactionMode transMode) : thread_pool(num_threads), num_threads(num_threads) {
-    if (transMode == ENABLED) {
-        db = new database(cstr(DB_NAME), cstr(configPath), DB_OPTIMISTIC_TRANSACTION, cstr(dbPath), cstr(logPath));
+Database::Database(string db_path, int num_threads, string config_path, string log_path, TransactionMode trans_mode) : thread_pool(num_threads), num_threads(num_threads) {
+    if (trans_mode == ENABLED) {
+        db = new database(cstr(DB_NAME), cstr(config_path), DB_OPTIMISTIC_TRANSACTION, cstr(db_path), cstr(log_path));
     } else {
-        db = new database(cstr(DB_NAME), cstr(configPath), DB_TRANSACTION_NONE, cstr(dbPath), cstr(logPath));
+        db = new database(cstr(DB_NAME), cstr(config_path), DB_TRANSACTION_NONE, cstr(db_path), cstr(log_path));
     }
     tbl = NULL;
+    b_tbl = NULL;
 }
 
 void Database::close_database() {
     if (db) {
+        close_table();
         db->closedatabase();
     }
 }
@@ -20,82 +22,113 @@ void Database::use_table(int id) {
     if ((tbl = db->gettable(cstr(TABLE_PREFIX + istr(id)), OPENCREATE)) == NULL) {
         cout << "throw exception table" << endl;
     }
+    b_tbl = db->gettable(cstr(TABLE_BLACKLIST_PREFIX + istr(id)), OPENCREATE);
 }
 
 void Database::close_table() {
     if (tbl) {
         tbl->closetable();
+        tbl = NULL;
     }
+}
+
+table_env* Database::get_table_properties(bool write_mode) {
+    table_env* properties = new table_env();
+    return properties;
+}
+
+void Database::blacklist_key(FDT* key, connection* conn, connection* b_conn) {
+    bool is_blacklisted = true;
+    FDT* val = new FDT(&is_blacklisted, sizeof(bool));
+    b_conn->put(key, val, INSERT_UNIQUE);
+    conn->del(key);
 }
 
 void Database::put(key_value data) {
-    vector<key_value> v(1, data);
-    thread_pool.enqueue([](Database* db, vector<key_value>* data, size_t start, size_t end) {
-            db->batch_put(data, start, end);
-            return 0;
-        }, this, &v, 0, 1).get();
+    key_value_map v;
+    v[data.first].push_back(data.second);
+    thread_pool.enqueue([](Database * db, key_value_map * data, key_value_map::iterator start, key_value_map::iterator end) {
+        db->batch_put(data, start, end);
+        return 0;
+    }, this, &v, v.begin(), v.end()).get();
 }
 
-void Database::put(vector<key_value>& data) {
-    size_t data_size = data.size();
-    size_t batch_size = ceil((1.0 * data_size) / num_threads);
-    size_t start = 0, end = min(batch_size, data_size);
+void Database::put(key_value_map& data) {
+    ll map_size = data.size();
+    ll batch_size = ceil((1.0 * map_size) / num_threads);
+    key_value_map::iterator start, end;
+    start = end = data.begin();
+    advance(end, batch_size);
     vector< std::future<int> > results;
     for (int i = 0; i < num_threads; i++) {
         results.emplace_back(
-        thread_pool.enqueue([](Database* db, vector<key_value>* data, size_t start, size_t end) {
+        thread_pool.enqueue([](Database * db, key_value_map * data, key_value_map::iterator start, key_value_map::iterator end) {
             db->batch_put(data, start, end);
             return 0;
         }, this, &data, start, end));
-        start = start + batch_size;
-        end = min(end + batch_size, data_size);
+        map_size = map_size > batch_size ? map_size - batch_size : 0 ;
+        advance(start, map_size == 0 ? 0 : batch_size);
+        advance(end, min(map_size, batch_size));
     }
-    for (auto&& result : results)
+    for (auto && result : results)
         result.get();
 }
 
-void Database::batch_put(vector<key_value>* data, size_t start, size_t end) {
+void Database::batch_put(key_value_map* data, key_value_map::iterator start, key_value_map::iterator end) {
     connection* conn = tbl->getconnection();
-    if (conn) {
-        for(int i=start; i<end; i++) {
-            FDT* key = new FDT(&(data->at(i)).first, sizeof(t_key));
+    connection* b_conn = b_tbl->getconnection();
+    for (key_value_map::iterator it = start; it != end; it++) {
+        t_key m_key = it->first;
+        size_t val_length = (it->second).size();
+        FDT* key = new FDT(&m_key, sizeof(t_key));
+        FDT* b_value = b_conn->get(key);
+        if (!(b_value && *(bool*) (b_value->data))) {
             FDT* o_value = conn->get(key);
             FDT* n_value = new FDT();
-            t_value* values;
+            t_value* values = NULL;
             int pos = 0;
             if (o_value != NULL) {
                 pos = o_value->length / sizeof(t_value);
-                values = new t_value[pos + 1];
-                copy(values, (t_value*)o_value->data, pos);
-                o_value->free();
+                if (pos + val_length >= INDEX_THRESHOLD_LIMIT) {
+                    blacklist_key(key, conn, b_conn);
+                    continue;
+                }
+                values = (t_value*)realloc(o_value->data, sizeof(t_value) * (pos + val_length));
             } else {
-                values = new t_value[1];
+                if (val_length >= INDEX_THRESHOLD_LIMIT) {
+                    blacklist_key(key, conn, b_conn);
+                    continue;
+                }
+                values = (t_value*)malloc(sizeof(t_value) * val_length);
             }
-            values[pos] = (data->at(i)).second;
-            n_value->length = sizeof(t_value) * (pos + 1);
+            for (int i = 0; i < val_length && pos < INDEX_THRESHOLD_LIMIT; i++) {
+                values[pos++] = (it->second)[i];
+            }
+            n_value->length = sizeof(t_value) * (pos);
             n_value->data = values;
+
             if (conn->put(key, n_value, INSERT_UPDATE) < 0) {
                 cout << "throw insert exception" << endl;
             }
-            delete key;
-            delete n_value;
             delete o_value;
+            delete n_value;
             delete[] values;
         }
-        conn->closeconnection();
-        delete conn;
-    } else {
-        cout<<"Couldn't establish connection"<<endl;
+        (it->second).clear();
+        delete key;
+        delete b_value;
     }
+    conn->closeconnection();
+    delete conn;
 }
 
 vector<t_value> Database::get(t_key k) {
     vector<t_key> keys(1, k);
     vector<vector<t_value> > values(1);
-    thread_pool.enqueue([](Database* db, vector<t_key>* keys, size_t start, size_t end, vector<vector<t_value> >* values) {
-            db->batch_get(keys, start, end, values);
-            return 0;
-        }, this, &keys, 0, 1, &values).get();
+    thread_pool.enqueue([](Database * db, vector<t_key>* keys, size_t start, size_t end, vector<vector<t_value> >* values) {
+        db->batch_get(keys, start, end, values);
+        return 0;
+    }, this, &keys, 0, 1, &values).get();
     return values[0];
 }
 
@@ -107,42 +140,91 @@ vector<vector<t_value> > Database::get(vector<t_key>& keys) {
     vector< future<int> > results;
     for (int i = 0; i < num_threads; i++) {
         results.emplace_back(
-        thread_pool.enqueue([](Database* db, vector<t_key>* keys, size_t start, size_t end, vector<vector<t_value> >* values) {
+        thread_pool.enqueue([](Database * db, vector<t_key>* keys, size_t start, size_t end, vector<vector<t_value> >* values) {
             db->batch_get(keys, start, end, values);
             return 0;
         }, this, &keys, start, end, &values));
         start = start + batch_size;
         end = min(end + batch_size, keys_size);
     }
-    for(auto&& result : results)
+    for (auto && result : results)
+        result.get();
+    return values;
+}
+
+key_value_map Database::get(unordered_set<t_key>& keys) {
+    ll keys_size = keys.size();
+    ll batch_size = ceil((1.0 * keys_size) / num_threads);
+    unordered_set<t_key>::iterator start, end;
+    start = end = keys.begin();
+    advance(end, batch_size);
+    key_value_map values;
+    vector< std::future<int> > results;
+    for (int i = 0; i < num_threads; i++) {
+        results.emplace_back(
+        thread_pool.enqueue([](Database * db, unordered_set<t_key>* keys, unordered_set<t_key>::iterator start, unordered_set<t_key>::iterator end, key_value_map * values) {
+            db->batch_get(keys, start, end, values);
+            return 0;
+        }, this, &keys, start, end, &values));
+        keys_size = keys_size > batch_size ? keys_size - batch_size : 0 ;
+        advance(start, keys_size == 0 ? 0 : batch_size);
+        advance(end, min(keys_size, batch_size));
+    }
+    for (auto && result : results)
+        result.get();
+
+    for (auto && result : results)
         result.get();
     return values;
 }
 
 void Database::batch_get(vector<t_key>* keys, size_t start, size_t end, vector<vector<t_value> >* values) {
     connection* conn = tbl->getconnection();
-    if (conn) {
-        for (int i=start; i<end; i++){
-            FDT* key = new FDT(&(keys->at(i)), sizeof(t_key));
-            FDT* value = conn->get(key);
-            if (value) {
-                size_t length = value->length / sizeof(t_value);
-                (values->at(i)).assign((t_value*)value->data, (t_value*)value->data + length);
-                value->free();
-            }
-            delete key;
+    connection* blacklisted_conn = b_tbl->getconnection();
+    for (int i = start; i < end; i++) {
+        FDT* key = new FDT(&(keys->at(i)), sizeof(t_key));
+        FDT* b_value = blacklisted_conn->get(key);
+        if (b_value && *(bool*) (b_value->data)) continue;
+        FDT* value = conn->get(key);
+        if (value) {
+            size_t length = value->length / sizeof(t_value);
+            (values->at(i)).assign((t_value*)value->data, (t_value*)value->data + length);
+            value->free();
+        }
+        delete key;
+        delete value;
+    }
+    blacklisted_conn->closeconnection();
+    conn->closeconnection();
+    delete blacklisted_conn;
+    delete conn;
+}
+
+void Database::batch_get(unordered_set<t_key>* keys, unordered_set<t_key>::iterator start, unordered_set<t_key>::iterator end, key_value_map* data) {
+    connection* conn = tbl->getconnection();
+    connection* blacklisted_conn = b_tbl->getconnection();
+    for (unordered_set<t_key>::iterator it = start; it != end; it++) {
+        t_key m_key = *it;
+        FDT* key = new FDT(&m_key, sizeof(t_key));
+        FDT* b_value = blacklisted_conn->get(key);
+        if (b_value && *(bool*) (b_value->data)) continue;
+        FDT* value = conn->get(key);
+        if (value) {
+            size_t length = value->length / sizeof(t_value);
+            data->at(m_key).assign((t_value*)value->data, (t_value*)value->data + length);
             delete value;
         }
-        conn->closeconnection();
-        delete conn;
-    } else {
-        cout << "throw connection exception" << endl;
+        delete key;
     }
+    blacklisted_conn->closeconnection();
+    conn->closeconnection();
+    delete blacklisted_conn;
+    delete conn;
 }
 
 void Database::remove(t_key k) {
     vector<t_key> keys(1, k);
-    auto results = thread_pool.enqueue([](Database* db, vector<t_key>* keys, size_t start, size_t end) {
+    auto results = thread_pool.enqueue([](Database * db, vector<t_key>* keys, size_t start, size_t end) {
         db->batch_remove(keys, start, end);
         return 0;
     }, this, &keys, 0, 1).get();
@@ -155,38 +237,36 @@ void Database::remove(vector<t_key>& keys) {
     vector< future<int> > results;
     for (int i = 0; i < num_threads; i++) {
         results.emplace_back(
-        thread_pool.enqueue([](Database* db, vector<t_key>* keys, size_t start, size_t end) {
+        thread_pool.enqueue([](Database * db, vector<t_key>* keys, size_t start, size_t end) {
             db->batch_remove(keys, start, end);
             return 0;
         }, this, &keys, start, end));
         start = start + batch_size;
         end = min(end + batch_size, data_size);
     }
-    for (auto&& result : results)
+    for (auto && result : results)
         result.get();
 }
 
 void Database::batch_remove(vector<t_key>* keys, size_t start, size_t end) {
     connection* conn = tbl->getconnection();
-    if (conn) {
-        for (int i=start; i<end;i++) {
-            FDT* key = new FDT(&(keys->at(i)), sizeof(t_key));
-            if (conn->del(key) < 0) {
-                cout << "throw delete exception" << endl;
-            }
-            delete key;
-        }
-        conn->closeconnection();
-    } else {
-        cout << "throw connection exception" << endl;
+    connection* blacklisted_conn = b_tbl->getconnection();
+
+    for (int i = start; i < end; i++) {
+        FDT* key = new FDT(&(keys->at(i)), sizeof(t_key));
+        blacklisted_conn->del(key);
+        conn->del(key);
+        delete key;
     }
+    blacklisted_conn->closeconnection();
+    conn->closeconnection();
     delete conn;
+    delete blacklisted_conn;
 }
 
 Database::~Database() {
     thread_pool.join();
     close_table();
     close_database();
-    delete tbl;
     delete db;
 }

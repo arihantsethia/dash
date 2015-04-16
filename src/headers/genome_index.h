@@ -13,4 +13,5 @@ protected:
 public:
     GenomeIndex(int seed_len) : seed_len(seed_len), hash(seed_len) {}
 };
+
 #endif

@@ -1,9 +1,10 @@
 #ifndef FILE_BUFFER
 #define FILE_BUFFER
+
 #include "generic.h"
 #include "constants.h"
-class FileBuffer
-{
+
+class FileBuffer {
 private:
     string file_path;
     char* buf;
@@ -17,4 +18,5 @@ public:
     bool has_next();
     ~FileBuffer();
 };
+
 #endif
