@@ -12,6 +12,7 @@ void GenomeIndexWriter::write_index(string filename) {
     FileBuffer fb(filename);
     t_value pos = 0;
     int x = 0;
+    vector<key_value> data;
     while (fb.has_next()) {
         key_value_map data;
         ll counter = JOB_LEN;
@@ -20,6 +21,8 @@ void GenomeIndexWriter::write_index(string filename) {
             data[key].push_back(pos);
             pos++;
         }
+        cout<<x++<<"Inserting : "<<pos<<endl;
         db.put(data);
+        cout<<"Done"<<endl;
     }
 }

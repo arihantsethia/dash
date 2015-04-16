@@ -9,8 +9,9 @@ private:
     string file_path;
     char* buf;
     size_t s, e;
-    size_t len;
-    ifstream fin;
+    size_t len, pos;
+    string chromo;
+
 public:
     FileBuffer(string file_path, size_t len = SEED_LEN);
 
