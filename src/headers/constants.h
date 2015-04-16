@@ -6,7 +6,7 @@
 
 static const string PATH_SEPERATOR = get_path_seperator();
 static const string PATH = "dash_files";
-static const int NUM_THREADS = 4;
+static const int NUM_THREADS = 6;
 
 static const string DB_PATH = PATH + PATH_SEPERATOR + "db";
 static const string DB_NAME = "dash_db";
@@ -21,7 +21,7 @@ static const string INDEX_PROP_FILE = PATH + PATH_SEPERATOR + "index.prop";
 static const string SEED_LEN_PROP = "SEED_LEN";
 static const int SEED_LEN = 20;
 
-static const int JOB_LEN = 5000000;
+static const int JOB_LEN = 10000000;
 static const int INDEX_THRESHOLD_LIMIT = 200;
 
 #endif

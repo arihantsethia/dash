@@ -9,8 +9,6 @@ class GenomeIndexWriter : private GenomeIndex {
 public:
     GenomeIndexWriter(int seed_len = SEED_LEN);
     void write_index(string filename);
-    //~GenomeIndexWriter();
-    
 };
 
 #endif

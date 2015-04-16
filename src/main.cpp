@@ -20,7 +20,6 @@ void arihant_func() {
 }
 
 void shobhit_func(string filename) {
-    cout<<filename<<endl;
     GenomeIndexWriter g;
     g.write_index(filename);
 }

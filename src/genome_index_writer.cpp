@@ -2,11 +2,12 @@
 
 GenomeIndexWriter::GenomeIndexWriter(int seed_len) : GenomeIndex(seed_len) {}
 
-GenomeIndexWriter::~GenomeIndexWriter() {}
-
 void GenomeIndexWriter::write_index(string filename) {
     vector<string> tokens = tokenize(filename, "_");
     int chromo_id = stoi(tokens.back());
+
+    cout<<"Processing Chromosome : "<<chromo_id<<endl;
+
     db.use_table(chromo_id);
 
     FileBuffer fb(filename);
@@ -14,6 +15,7 @@ void GenomeIndexWriter::write_index(string filename) {
     int x = 0;
     vector<key_value> data;
     while (fb.has_next()) {
+        cout<<"Reading chromosome..."<<endl;
         key_value_map data;
         ll counter = JOB_LEN;
         while (fb.has_next() && counter--) {
@@ -21,8 +23,7 @@ void GenomeIndexWriter::write_index(string filename) {
             data[key].push_back(pos);
             pos++;
         }
-        cout<<x++<<"Inserting : "<<pos<<endl;
         db.put(data);
-        cout<<"Done"<<endl;
+        cout<<"Done : "<<(++x)*5<<"%"<<endl;
     }
 }
