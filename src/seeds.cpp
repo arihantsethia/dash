@@ -8,10 +8,10 @@ vector<t_key> Seeds::get_seeds(string rd) {
     //insert all seeds into vector except last one
     for (int i = 0; i < n - 1; i = i + seed_len) {
         for (int j = 0; j < seed_len; ++j) {
-            // temp[j] = rd[i * seed_len + j];
+            temp[j] = rd[i * seed_len + j];
         }
 
-        // seeds[pos] = hash.get_hash(temp);
+        seeds[pos] = hash.get_hash(temp);
         pos++;
     }
     

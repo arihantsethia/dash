@@ -25,12 +25,8 @@ string FileReader::get_DNA_sequence(int id, t_value pos, int read_len) {
 
     string dna_seq = "";
     fin_array[id].read(seq, read_len);
-    // returning DNA sequences, including those that are smaller than read size
     dna_seq.assign(seq);
     
-    // if (fin_array[id].gcount() == read_len) {
-    //     dna_seq.assign(seq);
-    // }
     fin_array[id].clear();
     delete[] seq;
     return dna_seq;

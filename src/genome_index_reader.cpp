@@ -34,10 +34,7 @@ vector<vector<unordered_set<t_value> > > GenomeIndexReader::get_positions(vector
                     int pos = chromo_map_seeds_pos[c][seed_temp][p];
                     // save read pos only if the following quantity >= 0
                     int offset_pos = pos - s_idx * seed_len;
-                    // if (pos - s_idx * seed_len >= 0 ) {
-                        reads_chromo_pos_set[r][c].insert(max(0,offset_pos));
-                        // reads_chromo_pos_set[r][c].insert(pos - s_idx * seed_len);
-                    // }
+                    reads_chromo_pos_set[r][c].insert(max(0,offset_pos));
                 }
             }
         }
@@ -52,10 +49,7 @@ vector<vector<unordered_set<t_value> > > GenomeIndexReader::get_positions(vector
                 int pos = chromo_map_seeds_pos[c][seed_temp][p];
                 // save seed pos only if the following quantity >= 0
                 int offset_pos = pos - val * seed_len - mod;
-                // if (pos - val * seed_len - mod >= 0 ) {
-                    reads_chromo_pos_set[r][c].insert(max(0,offset_pos));
-                    // reads_chromo_pos_set[r][c].insert(pos - val * seed_len - mod);
-                // }
+                reads_chromo_pos_set[r][c].insert(max(0,offset_pos));
             }
         }
     }

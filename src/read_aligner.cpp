@@ -47,16 +47,14 @@ void ReadAligner::align_read(string& read, vector < unordered_set<t_value> >& ch
                 d_best = d_curr;
                 best_pos = p;
                 best_chromo = c;
-                // d_second = d_best;
             }
             else if (d_curr >= d_best && d_curr < d_second) {
                 d_second = d_curr;
             }
-            // cout<<d_best<<" "<<d_second<<endl;
             if (d_best < CONFIDENCE_THRESHOLD && d_second < d_best + CONFIDENCE_THRESHOLD) {
                 //we have two hits within dist. CONFIDENCE_THRESHOLD and no better hit can be confident
                 alignment_status = MULTIPLE_HITS;
-                // return;
+                return;
             }
         }
     }
@@ -120,24 +118,17 @@ int ReadAligner::ukonnen_distance(int n, int m, const string& s1, const string& 
             current[init] = (last[init - 1] + (s1[init] == s2[i] ? 0 : b)) < (last[init] + a) ? (last[init - 1] + (s1[init] == s2[i] ? 0 : b)) : (last[init] + a);
         }
 
-        //for(j = 0 ; j <= init ; j++ ) printf("x ");
         for (j = init + 1; j <= end ; j++) {
             int p1 = last[j - 1] + (s1[j] == s2[i] ? 0 : b);
             int p2 = last[j] + a;
             int min = p1 < p2 ? p1 : p2;
             min = min < (current[j - 1] + a) ? min : current[j - 1] + a;
             current[j] = min;
-            //if(j == end && j != n) continue;
-            //printf("%d ",current[j]);
         }
 
         if ( end != n) {
             current[end] = (last[end - 1] + (s1[end] == s2[i] ? 0 : b)) < (current[end - 1] + a) ? (last[end - 1] + (s1[end] == s2[i] ? 0 : b)) : (current[end - 1] + a);
-            //printf("%d ",current[end]);
         }
-        //for(j = end+1; j<= n; j++) printf("x ");
-        //printf("\n");
-        //current[end] = (last[end-1] + (s1[end] == s2[i] ? 0:b)) < current[end-1] + b ? (last[end-1] + (s1[end] == s2[i] ? 0:b)) : (current[end-1] + b);
         swap(last,current);
     }
 

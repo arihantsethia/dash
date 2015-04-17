@@ -6,8 +6,7 @@ Database::Database(string db_path, int num_threads, string config_path, string l
     } else {
         db = new database(cstr(DB_NAME), cstr(config_path), DB_TRANSACTION_NONE, cstr(db_path), cstr(log_path));
     }
-    tbl = NULL;
-    b_tbl = NULL;
+    tbl = b_tbl = NULL;
 }
 
 void Database::close_database() {
@@ -19,16 +18,14 @@ void Database::close_database() {
 
 void Database::use_table(int id) {
     close_table();
-    if ((tbl = db->gettable(cstr(TABLE_PREFIX + istr(id)), OPENCREATE)) == NULL) {
-        cout << "throw exception table" << endl;
-    }
+    tbl = db->gettable(cstr(TABLE_PREFIX + istr(id)), OPENCREATE);
     b_tbl = db->gettable(cstr(TABLE_BLACKLIST_PREFIX + istr(id)), OPENCREATE);
 }
 
 void Database::close_table() {
     if (tbl) {
         tbl->closetable();
-        tbl = NULL;
+        b_tbl->closetable();
     }
 }
 
@@ -112,14 +109,16 @@ void Database::batch_put(key_value_map* data, key_value_map::iterator start, key
             }
             delete o_value;
             delete n_value;
-            delete[] values;
+            free(values);
         }
         (it->second).clear();
         delete key;
         delete b_value;
     }
     conn->closeconnection();
+    b_conn->closeconnection();
     delete conn;
+    delete b_conn;
 }
 
 vector<t_value> Database::get(t_key k) {
@@ -172,9 +171,6 @@ key_value_map Database::get(unordered_set<t_key>& keys) {
     }
     for (auto && result : results)
         result.get();
-
-    for (auto && result : results)
-        result.get();
     return values;
 }
 
@@ -207,12 +203,16 @@ void Database::batch_get(unordered_set<t_key>* keys, unordered_set<t_key>::itera
         t_key m_key = *it;
         FDT* key = new FDT(&m_key, sizeof(t_key));
         FDT* b_value = blacklisted_conn->get(key);
-        if (b_value && *(bool*) (b_value->data)) continue;
+        if (b_value && *(bool*) (b_value->data)) {
+            b_value->free();
+            delete key;
+            continue;
+        }
         FDT* value = conn->get(key);
         if (value) {
             size_t length = value->length / sizeof(t_value);
             data->at(m_key).assign((t_value*)value->data, (t_value*)value->data + length);
-            delete value;
+            value->free();
         }
         delete key;
     }
@@ -268,5 +268,7 @@ Database::~Database() {
     thread_pool.join();
     close_table();
     close_database();
+    delete tbl;
+    delete b_tbl;
     delete db;
 }
