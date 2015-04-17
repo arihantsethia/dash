@@ -1,7 +1,7 @@
 #include "headers/genome_cleaner.h"
 
 const string GenomeCleaner::CHROMOSOME_PREFIX = "chromosome_";
-const int GenomeCleaner::BUFFER_SIZE = 1;//00 * 1024 * 1024;
+const int GenomeCleaner::BUFFER_SIZE = 100 * 1024 * 1024;
 
 GenomeCleaner::GenomeCleaner(string genome_file, string genome_dir): genome_dir(genome_dir), genome_file(genome_file) {
 }
@@ -10,12 +10,12 @@ void GenomeCleaner::clean() {
     ofstream o_file;
     bool skip = false;
     int chromosome_counter = 1;
-    char* rbuffer = new char [BUFFER_SIZE];
-    char* wbuffer = new char [BUFFER_SIZE];
-    memset(wbuffer, 0, sizeof(wbuffer));
+    char* rbuffer = new char[BUFFER_SIZE+1];
+    char* wbuffer = new char[BUFFER_SIZE+1];
+    memset(wbuffer, 0, BUFFER_SIZE+1);
     size_t wlength = 0, rlength = 0;
     while (i_file) {
-        memset(rbuffer, 0, sizeof(rbuffer));
+        memset(rbuffer, 0, BUFFER_SIZE+1);
         i_file.read(rbuffer, BUFFER_SIZE);
         rlength = 0;
         while (rbuffer[rlength]) {
@@ -26,7 +26,7 @@ void GenomeCleaner::clean() {
                     o_file.write(wbuffer, wlength);
                     o_file.close();
                 }
-                memset(wbuffer, 0, sizeof(wbuffer));
+                memset(wbuffer, 0, BUFFER_SIZE+1);
                 wlength = 0;
                 o_file.open(chromosome_file_path(chromosome_counter++));
             }
@@ -39,7 +39,7 @@ void GenomeCleaner::clean() {
                     wbuffer[wlength++] = get_base(curr_chr);
                     if (wlength == BUFFER_SIZE) {
                         o_file.write(wbuffer, wlength);
-                        memset(wbuffer, 0, sizeof(wbuffer));
+                        memset(wbuffer, 0, BUFFER_SIZE+1);
                         wlength = 0;
                     }
                 }

@@ -16,6 +16,7 @@ static const string TABLE_BLACKLIST_PREFIX = "index_chromosome_blacklist_";
 static const string DB_CONFIG = PATH + PATH_SEPERATOR + "db_config";
 
 static const string GENOME_PATH = PATH + PATH_SEPERATOR + "genome";
+static const string CHROMOSOME_PREFIX = GENOME_PATH + PATH_SEPERATOR + "chromosome_";
 
 static const string INDEX_PROP_FILE = PATH + PATH_SEPERATOR + "index.prop";
 static const string SEED_LEN_PROP = "SEED_LEN";
