@@ -1,32 +1,29 @@
 #include "headers/genome_index_writer.h"
 
-GenomeIndexWriter::GenomeIndexWriter(int seed_len) : GenomeIndex(seed_len) {
-    // IndexProperties I;
-    // string seed_len_str = I.get_property(SEED_LEN_PROP);
-    // seed_len = stoi(seed_len_str);
-}
+GenomeIndexWriter::GenomeIndexWriter(int seed_len) : GenomeIndex(seed_len) {}
 
 void GenomeIndexWriter::write_index(string filename) {
     vector<string> tokens = tokenize(filename, "_");
     int chromo_id = stoi(tokens.back());
+
+    cout<<"Processing Chromosome : "<<chromo_id<<endl;
+
     db.use_table(chromo_id);
 
     FileBuffer fb(filename);
-    string seed;
     t_value pos = 0;
-    int x;
+    int x = 0;
     vector<key_value> data;
     while (fb.has_next()) {
-        data.clear();
-        data.reserve(JOB_LEN);
-        while (fb.has_next() && data.size() < JOB_LEN) {
-            seed = fb.next();
-            t_key key = hash.get_hash(seed);
-            data.push_back(make_pair(key, pos));
+        cout<<"Reading chromosome..."<<endl;
+        key_value_map data;
+        ll counter = JOB_LEN;
+        while (fb.has_next() && counter--) {
+            t_key key = hash.get_hash(fb.next());
+            data[key].push_back(pos);
             pos++;
         }
-        cout<<x++<<"Inserting : "<<pos<<endl;
         db.put(data);
-        cout<<"Done"<<endl;
+        cout<<"Done : "<<(++x)*5<<"%"<<endl;
     }
 }

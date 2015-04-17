@@ -16,7 +16,7 @@ vector<vector<unordered_set<t_value> > > GenomeIndexReader::get_positions(vector
     vector < key_value_map > chromo_map_seeds_pos(NUM_CHROMOSOMES + 1);
     for (int i = 1; i <= NUM_CHROMOSOMES; ++i) {
         db.use_table(i);
-        chromo_map_seeds_pos[i] = db.batch_get(seeds_set);
+        chromo_map_seeds_pos[i] = db.get(seeds_set);
         // TODO: implement h_max threshold in the batch_set function. Read more at OneNote
         db.close_table();
     }

@@ -4,15 +4,11 @@
 #include "util.h"
 #include "genome_index.h"
 #include "file_buffer.h"
-// #include "hash.h"
 
-class GenomeIndexWriter : private GenomeIndex
-{
-private:
+class GenomeIndexWriter : private GenomeIndex {
 public:
     GenomeIndexWriter(int seed_len = SEED_LEN);
     void write_index(string filename);
-    //~GenomeIndexWriter();
-    
 };
+
 #endif

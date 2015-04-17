@@ -16,4 +16,5 @@ public:
     t_key get_hash(string);
     string get_value(t_key);
 };
+
 #endif

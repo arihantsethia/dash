@@ -18,7 +18,7 @@ DCOMPILE_FLAGS = -D DEBUG
 # Add additional include paths
 INCLUDES = -I $(SRC_PATH)/
 # General linker settings
-LINK_FLAGS = -lbangdb -pthread
+LINK_FLAGS = -pthread
 # Additional release-specific linker settings
 RLINK_FLAGS = 
 # Additional debug-specific linker settings
@@ -67,9 +67,12 @@ debug: export BUILD_PATH := build/debug
 debug: export BIN_PATH := bin/debug
 install: export BIN_PATH := bin/release
 
+
 export DASH_FILES := dash_files
 export DB_CONFIG := db_config
 export DB_CONFIG_FILE := bangdb.config
+export LIB := lib
+export BANG_LIB = lib/libbangdb.so
 
 # Find all source files in the source directory, sorted by most
 # recently modified
@@ -151,6 +154,8 @@ dirs:
 	@echo "Creating directories"
 	@mkdir -p $(dir $(OBJECTS))
 	@mkdir -p $(BIN_PATH)
+	@mkdir -p $(BIN_PATH)/$(LIB)
+	@cp $(BANG_LIB) $(BIN_PATH)/$(BANG_LIB)
 	@mkdir -p $(BIN_PATH)/$(DASH_FILES)
 	@mkdir -p $(BIN_PATH)/$(DASH_FILES)/$(DB_CONFIG)
 	@cp $(DB_CONFIG)/$(DB_CONFIG_FILE) $(BIN_PATH)/$(DASH_FILES)/$(DB_CONFIG)/$(DB_CONFIG_FILE)
@@ -186,7 +191,7 @@ all: $(BIN_PATH)/$(BIN_NAME)
 $(BIN_PATH)/$(BIN_NAME): $(OBJECTS)
 	@echo "Linking: $@"
 	@$(START_TIME)
-	$(CMD_PREFIX)$(CXX) $(OBJECTS) $(LDFLAGS) -o $@
+	$(CMD_PREFIX)$(CXX) $(OBJECTS) $(BANG_LIB) $(LDFLAGS) -o $@
 	@echo -en "\t Link time: "
 	@$(END_TIME)
 

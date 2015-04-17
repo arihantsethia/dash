@@ -17,6 +17,7 @@
 #include <map>
 #include <unordered_map>
 #include <set>
+#include <unordered_set>
 #include <cstring>
 #include <cassert>
 #include <list>
@@ -28,10 +29,11 @@
 
 using namespace std;
 
+typedef long long ll;
 typedef unsigned long long ull;
-typedef pair<ull, ull> key_value;
-typedef ull t_key;
-typedef ull t_value;
-
+typedef ll t_key;
+typedef unsigned int t_value;
+typedef pair<t_key, t_value> key_value;
+typedef unordered_map<t_key, vector<t_value> > key_value_map;
 
 #endif

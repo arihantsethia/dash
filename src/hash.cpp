@@ -11,18 +11,18 @@ void Hash::set_length(int len) {
     length = len;
 }
 
-t_value Hash::get_hash(string s) {
+t_key Hash::get_hash(string s) {
     if (s.length() != length || !is_valid_dna(s)) {
         cout << "Throw some error" << endl;
     }
-    t_value hash_val = 2;
+    t_key hash_val = 0;
     for (int i = 0; i < length; i++) {
         hash_val = (hash_val << 2) | char_to_bit.at(s[i]);
     }
     return hash_val;
 }
 
-string Hash::get_value(t_value v) {
+string Hash::get_value(t_key v) {
     string s(length, ' ');
     for (int i = length - 1; i >= 0; i--) {
         s[i] = bit_to_char.at(v & 3);

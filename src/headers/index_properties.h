@@ -1,5 +1,6 @@
 #ifndef INDEX_PROPERTIES
 #define INDEX_PROPERTIES
+
 #include "util.h"
 #include "constants.h"
 
@@ -15,4 +16,5 @@ public:
     void put_property(string key, string val);
 
 };
+
 #endif

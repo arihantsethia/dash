@@ -18,12 +18,11 @@ void initialize_dash_dirs() {
 }
 
 void arihant_func() {
+    GenomeCleaner g("chr1.fa");
+    g.clean();
 }
 
-void shobhit_func(string f1, string f2) {
-    // GenomeIndexWriter g;
-    // g.write_index(f1);
-    // g.write_index(f2);
+void shobhit_func() {
     vector<string> reads;
     reads.push_back("tacaattggccaattggccgtac");
     Aligner a;
@@ -32,6 +31,8 @@ void shobhit_func(string f1, string f2) {
 int main(int argc, char *argv[]) {
     initialize_dash_dirs();
     // arihant_func();
-    shobhit_func(argv[1], argv[2]);
+    shobhit_func();
+    //arihant_func();
+    //cout<<"Cleaned"<<endl;
     return 0;
 }
