@@ -11,6 +11,6 @@ protected:
     Hash hash;
 
 public:
-    GenomeIndex(int seed_len) : seed_len(seed_len), hash(seed_len) {}
+    GenomeIndex(int seed_len = SEED_LEN) : seed_len(seed_len), hash(seed_len) {}
 };
 #endif

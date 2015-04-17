@@ -7,7 +7,7 @@
 
 class GenomeCleaner {
 private:
-    static const string CHROMOSOME_PREFIX;
+    // static const string CHROMOSOME_PREFIX;
     static const int BUFFER_SIZE;
 
 

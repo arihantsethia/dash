@@ -1,6 +1,6 @@
 #include "headers/genome_cleaner.h"
 
-const string GenomeCleaner::CHROMOSOME_PREFIX = "chromosome_";
+// const string GenomeCleaner::CHROMOSOME_PREFIX = "chromosome_";
 const int GenomeCleaner::BUFFER_SIZE = 50 * 1024 * 1024;
 
 GenomeCleaner::GenomeCleaner(string genome_file, string genome_dir): genome_dir(genome_dir), genome_file(genome_file) {
