@@ -14,9 +14,8 @@ FileBuffer::FileBuffer(string file_path, size_t len) : len(len), file_path(file_
         for (int i = 0; i < len; ++i) {
             buf[i] = chromo[i];
         }
-        
+
         pos = len;
-        // fin.read(buf, len);
         fin.close();
     }
     catch (ifstream::failure e) {
@@ -26,26 +25,19 @@ FileBuffer::FileBuffer(string file_path, size_t len) : len(len), file_path(file_
 
 FileBuffer::~FileBuffer() {
     delete[] buf;
-    // if (fin.is_open()) {
-    //     fin.close();
-    // }
 }
+
 bool FileBuffer::has_next() {
-    return pos != chromo.size();
+    return pos != chromo.size() + 1;
 }
+
 string FileBuffer::next() {
-    // if(filebuf_pos == FILEBUF_SIZE) {
-
-    // }
-
-
     string seed(len, ' ');
     for (int i = s; i <= e; ++i) {
         seed[i - s] = buf[i % len];
     }
 
     e++;
-    // fin.get(buf[e % len]);
     buf[e % len] = chromo[pos];
     pos++;
     if (e - s == len) s++;

@@ -5,6 +5,9 @@
 #include "headers/genome_cleaner.h"
 #include "headers/file_buffer.h"
 #include "headers/genome_index_writer.h"
+#include "headers/genome_index_reader.h"
+#include "headers/file_reader.h"
+#include "headers/aligner.h"
 
 using namespace std;
 
@@ -19,14 +22,22 @@ void arihant_func() {
     g.clean();
 }
 
-void shobhit_func(string filename) {
-    GenomeIndexWriter g;
-    g.write_index(filename);
+void shobhit_func(string f1, string f2) {
+    {
+        GenomeIndexWriter giw;
+        giw.write_index(f1);
+        giw.write_index(f2);
+    }/*
+    vector<string> reads;
+    reads.push_back("tacaattggccaattggccgtac");
+    Aligner a;
+    a.align(reads);*/
 }
 int main(int argc, char *argv[]) {
     initialize_dash_dirs();
+    // arihant_func();
+    shobhit_func(argv[1], argv[2]);
     //arihant_func();
     //cout<<"Cleaned"<<endl;
-    shobhit_func(GENOME_PATH+PATH_SEPERATOR+"chromosome_001");
     return 0;
 }
