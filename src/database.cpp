@@ -18,8 +18,8 @@ void Database::close_database() {
 
 void Database::use_table(int id) {
     close_table();
-    tbl = db->gettable(cstr(TABLE_PREFIX + istr(id)), OPENCREATE);
-    b_tbl = db->gettable(cstr(TABLE_BLACKLIST_PREFIX + istr(id)), OPENCREATE);
+    tbl = db->gettable(cstr(TABLE_PREFIX + istr(id)), OPENCREATE, NULL);
+    b_tbl = db->gettable(cstr(TABLE_BLACKLIST_PREFIX + istr(id)), OPENCREATE, NULL);
 }
 
 void Database::close_table() {
@@ -90,13 +90,18 @@ void Database::batch_put(key_value_map* data, key_value_map::iterator start, key
                     blacklist_key(key, conn, b_conn);
                     continue;
                 }
-                values = (t_value*)realloc(o_value->data, sizeof(t_value) * (pos + val_length));
+                values = new t_value[pos + val_length];
+                copy(values,(t_value*)(o_value->data),pos);/*
+                for(int i=0;i<pos;i++)
+                    values[i] = ((t_value*)(o_value->data))[i];*/
+                delete[] (t_value*)(o_value->data);
+                delete o_value;
             } else {
                 if (val_length >= INDEX_THRESHOLD_LIMIT) {
                     blacklist_key(key, conn, b_conn);
                     continue;
                 }
-                values = (t_value*)malloc(sizeof(t_value) * val_length);
+                values = new t_value[val_length];
             }
             for (int i = 0; i < val_length && pos < INDEX_THRESHOLD_LIMIT; i++) {
                 values[pos++] = (it->second)[i];
@@ -107,9 +112,8 @@ void Database::batch_put(key_value_map* data, key_value_map::iterator start, key
             if (conn->put(key, n_value, INSERT_UPDATE) < 0) {
                 cout << "throw insert exception" << endl;
             }
-            delete o_value;
+            delete[] values;
             delete n_value;
-            free(values);
         }
         (it->second).clear();
         delete key;

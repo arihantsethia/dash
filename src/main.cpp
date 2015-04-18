@@ -27,11 +27,11 @@ void shobhit_func(string f1, string f2) {
         GenomeIndexWriter giw;
         giw.write_index(f1);
         giw.write_index(f2);
-    }/*
+    }
     vector<string> reads;
     reads.push_back("tacaattggccaattggccgtac");
     Aligner a;
-    a.align(reads);*/
+    a.align(reads);/**/
 }
 int main(int argc, char *argv[]) {
     initialize_dash_dirs();
