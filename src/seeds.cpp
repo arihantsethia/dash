@@ -10,7 +10,6 @@ vector<t_key> Seeds::get_seeds(string rd) {
         for (int j = 0; j < seed_len; ++j) {
             temp[j] = rd[i * seed_len + j];
         }
-
         seeds[pos] = hash.get_hash(temp);
         pos++;
     }

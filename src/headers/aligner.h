@@ -13,6 +13,6 @@ private:
     
 public:
     Aligner(int seed_len = SEED_LEN);
-    void align(vector<string> reads);
+    void align(vector<string>& reads);
 };
 #endif

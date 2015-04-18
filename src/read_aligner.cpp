@@ -20,7 +20,7 @@ void ReadAligner::align_read(string& read, vector < unordered_set<t_value> >& ch
 
     for (int c = 1; c <= NUM_CHROMOSOMES; ++c) {
         cout << "#" << c << endl;
-        for (auto& p : chromo_pos[c]) { 
+        for (auto& p : chromo_pos[c]) {
             string dna_seq = fr.get_DNA_sequence(c, p, read.size());
 
             if (dna_seq == "") {
@@ -39,11 +39,16 @@ void ReadAligner::align_read(string& read, vector < unordered_set<t_value> >& ch
             }
             // read.size() is guarenteed to be greater than dna_seq.size()
             d_curr = ukonnen_distance(read.size(), dna_seq.size(), read, dna_seq, d_limit);
-            cout<<"ED="<<d_curr<<endl;
+
+            if (d_curr == -1) {
+                continue;
+            }
+            
+            cout << "ED=" << d_curr << endl;
             if (d_curr < d_best) {
-                if(d_best != INF) 
+                if (d_best != INF)
                     d_second = d_best;
-                
+
                 d_best = d_curr;
                 best_pos = p;
                 best_chromo = c;
@@ -59,10 +64,10 @@ void ReadAligner::align_read(string& read, vector < unordered_set<t_value> >& ch
         }
     }
 
-    if(d_best <= MAX_EDIT_DIST && d_second >= d_best + CONFIDENCE_THRESHOLD) {
+    if (d_best <= MAX_EDIT_DIST && d_second >= d_best + CONFIDENCE_THRESHOLD) {
         alignment_status = CONFIDENT;
-    } 
-    else if(d_best <= MAX_EDIT_DIST) {
+    }
+    else if (d_best <= MAX_EDIT_DIST) {
         alignment_status = MULTIPLE_HITS;
     }
     else {
@@ -82,7 +87,7 @@ void ReadAligner::align_read(string& read, vector < unordered_set<t_value> >& ch
 */
 int ReadAligner::ukonnen_distance(int n, int m, const string& s1, const string& s2, int t, int a, int b )
 {
-    vector<vector<int> > dp(2,vector<int>(n+1,0));
+    vector<vector<int> > dp(2, vector<int>(n + 1, 0));
 
     if (t < a * (n - m)) {
         return -1;
@@ -101,7 +106,7 @@ int ReadAligner::ukonnen_distance(int n, int m, const string& s1, const string& 
 
     int i, j;
     vector<int>& last = dp[0];
-    vector<int>& current = dp[1];//int *last = dp[1], *current = dp[0], *temp;
+    vector<int>& current = dp[1];
 
     for (i = 0 ; i <= n ; i++) {
         current[i] = last[i] = 10000000;
@@ -129,7 +134,7 @@ int ReadAligner::ukonnen_distance(int n, int m, const string& s1, const string& 
         if ( end != n) {
             current[end] = (last[end - 1] + (s1[end] == s2[i] ? 0 : b)) < (current[end - 1] + a) ? (last[end - 1] + (s1[end] == s2[i] ? 0 : b)) : (current[end - 1] + a);
         }
-        swap(last,current);
+        swap(last, current);
     }
 
 

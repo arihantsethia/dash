@@ -11,8 +11,13 @@ Database::Database(string db_path, int num_threads, string config_path, string l
 
 void Database::close_database() {
     if (db) {
+        thread_pool.join();
         close_table();
         db->closedatabase();
+        delete tbl;
+        delete b_tbl;
+        delete db;
+        db = NULL; tbl = b_tbl = NULL;
     }
 }
 
@@ -209,14 +214,14 @@ void Database::batch_get(unordered_set<t_key>* keys, unordered_set<t_key>::itera
         FDT* b_value = blacklisted_conn->get(key);
         if (b_value && *(bool*) (b_value->data)) {
             b_value->free();
-            delete key;
+            key->free();
             continue;
         }
         FDT* value = conn->get(key);
         if (value) {
             size_t length = value->length / sizeof(t_value);
             data->at(m_key).assign((t_value*)value->data, (t_value*)value->data + length);
-            value->free();
+            //value->free();
         }
         delete key;
     }
@@ -269,10 +274,6 @@ void Database::batch_remove(vector<t_key>* keys, size_t start, size_t end) {
 }
 
 Database::~Database() {
-    thread_pool.join();
-    close_table();
-    close_database();
-    delete tbl;
-    delete b_tbl;
-    delete db;
+    if(db)
+        close_database();
 }

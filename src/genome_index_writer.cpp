@@ -27,3 +27,7 @@ void GenomeIndexWriter::write_index(string filename) {
         cout<<"Done : "<<(++x)*5<<"%"<<endl;
     }
 }
+
+void GenomeIndexWriter::close_index() {
+    db.close_database();
+}

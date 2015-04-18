@@ -23,15 +23,16 @@ void arihant_func() {
 }
 
 void shobhit_func(string f1, string f2) {
-    {
-        GenomeIndexWriter giw;
-        giw.write_index(f1);
-        giw.write_index(f2);
-    }
+    GenomeIndexWriter giw;
+    giw.write_index(f1);
+    giw.write_index(f2);
+    giw.close_index();
+
     vector<string> reads;
-    reads.push_back("tacaattggccaattggccgtac");
+    reads.push_back("ttttatgcggggatgcccccatgcaaaaatgcttttatgc");
+    reads.push_back("ggggatgcccccatgcaaaaatgct");
     Aligner a;
-    a.align(reads);/**/
+    a.align(reads);
 }
 int main(int argc, char *argv[]) {
     initialize_dash_dirs();

@@ -6,7 +6,7 @@ Aligner::Aligner(int seed_len) : seed_len(seed_len) {
     // seed_len = stoi(seed_len_str);
 }
 
-void Aligner::align(vector<string> reads) {
+void Aligner::align(vector<string>& reads) {
     //returns 1 indexed vector. See function definition
     GenomeIndexReader gir(seed_len);
     vector<vector<unordered_set<t_value> > > reads_chromo_pos_set = gir.get_positions(reads);
