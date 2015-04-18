@@ -1,8 +1,8 @@
 #include "headers/genome_index_writer.h"
 
-GenomeIndexWriter::GenomeIndexWriter(int seed_len) : GenomeIndex(seed_len) {}
+GenomeIndexWriter::GenomeIndexWriter(int seed_len, int threads) : GenomeIndex(seed_len, threads) {}
 
-void GenomeIndexWriter::write_index(string filename) {
+void GenomeIndexWriter::write_index(string filename, t_value pos) {
     vector<string> tokens = tokenize(filename, "_");
     int chromo_id = stoi(tokens.back());
 
@@ -11,7 +11,6 @@ void GenomeIndexWriter::write_index(string filename) {
     db.use_table(chromo_id);
 
     FileBuffer fb(filename);
-    t_value pos = 0;
     int x = 0;
     vector<key_value> data;
     while (fb.has_next()) {

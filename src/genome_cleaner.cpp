@@ -14,6 +14,8 @@ void GenomeCleaner::clean() {
     memset(wbuffer, 0, BUFFER_SIZE + 1);
     size_t wlength = 0, rlength = 0;
     string chromosome_name;
+    t_value offset = 0;
+    bool ns = false;
     while (i_file) {
         memset(rbuffer, 0, BUFFER_SIZE + 1);
         i_file.read(rbuffer, BUFFER_SIZE);
@@ -21,6 +23,8 @@ void GenomeCleaner::clean() {
         while (rbuffer[rlength]) {
             char curr_chr = rbuffer[rlength];
             if (curr_chr == '>') {
+                offset = 0;
+                ns = true;
                 skip = true;
                 chromosome_name = "";
                 if (o_file.is_open()) {
@@ -40,12 +44,16 @@ void GenomeCleaner::clean() {
 
             if (!skip && o_file.is_open()) {
                 if (get_base(curr_chr)) {
+                    if(ns) chromosomes_offsets.push_back(offset);
+                    ns = false;
                     wbuffer[wlength++] = get_base(curr_chr);
                     if (wlength == BUFFER_SIZE) {
                         o_file.write(wbuffer, wlength);
                         memset(wbuffer, 0, BUFFER_SIZE + 1);
                         wlength = 0;
                     }
+                }else{
+                    if(ns)offset++;
                 }
             } else if (skip && curr_chr != '>') {
                 chromosome_name += curr_chr;
@@ -61,6 +69,10 @@ void GenomeCleaner::clean() {
 
 vector<string> GenomeCleaner::get_chromosomes() {
     return chromosomes;
+}
+
+vector<t_value> GenomeCleaner::get_offsets() {
+    return chromosomes_offsets;
 }
 
 string GenomeCleaner::chromosome_file_path(int id) {

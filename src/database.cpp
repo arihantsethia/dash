@@ -1,6 +1,6 @@
 #include "headers/database.h"
 
-Database::Database(string db_path, int num_threads, string config_path, string log_path, TransactionMode trans_mode) : thread_pool(num_threads), num_threads(num_threads) {
+Database::Database(int num_threads, string db_path, string config_path, string log_path, TransactionMode trans_mode) : thread_pool(num_threads), num_threads(num_threads) {
     if (trans_mode == ENABLED) {
         db = new database(cstr(DB_NAME), cstr(config_path), DB_OPTIMISTIC_TRANSACTION, cstr(db_path), cstr(log_path));
     } else {
@@ -96,9 +96,7 @@ void Database::batch_put(key_value_map* data, key_value_map::iterator start, key
                     continue;
                 }
                 values = new t_value[pos + val_length];
-                copy(values, (t_value*)(o_value->data), pos);/*
-                for(int i=0;i<pos;i++)
-                    values[i] = ((t_value*)(o_value->data))[i];*/
+                copy(values, (t_value*)(o_value->data), pos);
                 delete[] (t_value*)(o_value->data);
                 delete o_value;
             } else {
@@ -117,6 +115,7 @@ void Database::batch_put(key_value_map* data, key_value_map::iterator start, key
             if (conn->put(key, n_value, INSERT_UPDATE) < 0) {
                 cout << "throw insert exception" << endl;
             }
+
             delete[] values;
             delete n_value;
         }

@@ -20,6 +20,7 @@
 #include <unordered_set>
 #include <cstring>
 #include <cassert>
+#include <getopt.h>
 #include <list>
 #include <bitset>
 #include <numeric>

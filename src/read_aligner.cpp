@@ -2,7 +2,7 @@
 
 const int INF = numeric_limits<int>::max();
 
-ReadAligner::ReadAligner() {}
+ReadAligner::ReadAligner(int ed_threshold, int conf, int num_chromo): ed_threshold(ed_threshold), conf(conf), num_chromo(num_chromo) {}
 
 /*
 * for the given read, finds the best, second best alignments
@@ -11,14 +11,14 @@ ReadAligner::ReadAligner() {}
 */
 void ReadAligner::align_read(string& read, vector < unordered_set<t_value> >& chromo_pos) {
     int d_curr = 0;                 //edit dist for curr pos
-    int d_limit = MAX_EDIT_DIST;    //cutoff to be used for Ukonnen algo
+    int d_limit = ed_threshold;    //cutoff to be used for Ukonnen algo
     int d_second = INF;             //second best edit dist.
     d_best = INF;                   //best edit dist. found so far
     best_pos = -1;                  //pos corresponding to best edit dist.
     best_chromo = -1;               //chromosome id corresponding to best edit dist.
     alignment_status = NO_HITS;
 
-    for (int c = 1; c <= NUM_CHROMOSOMES; ++c) {
+    for (int c = 1; c <= num_chromo; ++c) {
         cout << "#" << c << endl;
         for (auto& p : chromo_pos[c]) {
             string dna_seq = fr.get_DNA_sequence(c, p, read.size());
@@ -26,18 +26,18 @@ void ReadAligner::align_read(string& read, vector < unordered_set<t_value> >& ch
             if (dna_seq == "") {
                 continue;
             }
-            cout << dna_seq << endl;
+            cout << "DNA: " << dna_seq << endl;
 
-            if (d_best > MAX_EDIT_DIST) {
-                d_limit = MAX_EDIT_DIST + CONFIDENCE_THRESHOLD - 1;
+            if (d_best > ed_threshold) {
+                d_limit = ed_threshold + conf - 1;
             }
-            else if (d_second >= d_best + CONFIDENCE_THRESHOLD) {
-                d_limit = d_best + CONFIDENCE_THRESHOLD - 1;
+            else if (d_second >= d_best + conf) {
+                d_limit = d_best + conf - 1;
             }
             else {
                 d_limit = d_best - 1;
             }
-            // read.size() is guarenteed to be greater than dna_seq.size()
+            // read.size() is guaranteed to be greater than dna_seq.size()
             d_curr = ukonnen_distance(read.size(), dna_seq.size(), read, dna_seq, d_limit);
 
             if (d_curr == -1) {
@@ -56,18 +56,18 @@ void ReadAligner::align_read(string& read, vector < unordered_set<t_value> >& ch
             else if (d_curr >= d_best && d_curr < d_second) {
                 d_second = d_curr;
             }
-            if (d_best < CONFIDENCE_THRESHOLD && d_second < d_best + CONFIDENCE_THRESHOLD) {
-                //we have two hits within dist. CONFIDENCE_THRESHOLD and no better hit can be confident
+            if (d_best < conf && d_second < d_best + conf) {
+                //we have two hits within dist. conf and no better hit can be confident
                 alignment_status = MULTIPLE_HITS;
                 return;
             }
         }
     }
 
-    if (d_best <= MAX_EDIT_DIST && d_second >= d_best + CONFIDENCE_THRESHOLD) {
+    if (d_best <= ed_threshold && d_second >= d_best + conf) {
         alignment_status = CONFIDENT;
     }
-    else if (d_best <= MAX_EDIT_DIST) {
+    else if (d_best <= ed_threshold) {
         alignment_status = MULTIPLE_HITS;
     }
     else {

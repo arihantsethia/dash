@@ -30,7 +30,7 @@ private:
 public:
     enum TransactionMode { DISABLED, ENABLED };
 
-    Database(string dbPath = DB_PATH, int num_threads = NUM_THREADS, string configPath = DB_CONFIG, string logPath = DB_LOG, TransactionMode transMode = DISABLED);
+    Database(int num_threads = NUM_THREADS, string dbPath = DB_PATH, string configPath = DB_CONFIG, string logPath = DB_LOG, TransactionMode transMode = DISABLED);
 
     void use_table(int);
     void close_table();

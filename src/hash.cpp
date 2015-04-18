@@ -26,6 +26,7 @@ string Hash::get_value(t_key v) {
     string s(length, ' ');
     for (int i = length - 1; i >= 0; i--) {
         s[i] = bit_to_char.at(v & 3);
+        v = v >> 2;
     }
     return s;
 }

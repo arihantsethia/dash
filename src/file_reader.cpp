@@ -1,10 +1,9 @@
 #include "headers/file_reader.h"
 
-FileReader::FileReader() : fin_array(NUM_CHROMOSOMES + 1) {
+FileReader::FileReader(int num_chromo) : num_chromo(num_chromo), fin_array(num_chromo + 1) {
     try {
-        for (int i = 1; i <= NUM_CHROMOSOMES; i++ ) {
+        for (int i = 1; i <= num_chromo; i++ ) {
             chromosome_path = GENOME_PATH + CHROMOSOME_PREFIX + pad(i, PAD_WIDTH);
-            cout << chromosome_path << endl;
             fin_array[i].open(chromosome_path, ifstream::binary);
             if (!fin_array[i].is_open()) {
                 cout << "File not found:" << chromosome_path << endl;
@@ -18,7 +17,6 @@ FileReader::FileReader() : fin_array(NUM_CHROMOSOMES + 1) {
 
 string FileReader::get_DNA_sequence(int id, t_value pos, int read_len) {
     fin_array[id].seekg(pos, fin_array[id].beg);
-    cout << pos << " " << read_len << " " << endl;
     char* seq = new char[read_len + 1];
     memset(seq, 0, read_len + 1);
 
@@ -32,7 +30,7 @@ string FileReader::get_DNA_sequence(int id, t_value pos, int read_len) {
 }
 
 FileReader::~FileReader() {
-    for (int i = 0; i <= NUM_CHROMOSOMES; ++i)
+    for (int i = 0; i <= num_chromo; ++i)
     {
         fin_array[i].close();
     }

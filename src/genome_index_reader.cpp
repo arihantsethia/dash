@@ -1,6 +1,6 @@
 #include "headers/genome_index_reader.h"
 
-GenomeIndexReader::GenomeIndexReader(int seed_len) : GenomeIndex(seed_len) {}
+GenomeIndexReader::GenomeIndexReader(int seed_len, int threads, int num_chromo) : GenomeIndex(seed_len, threads), num_chromo(num_chromo) {}
 
 vector<vector<unordered_set<t_value> > > GenomeIndexReader::get_positions(vector<string>& reads) {
     vector<vector<t_key> > seeds(reads.size());
@@ -16,7 +16,6 @@ vector<vector<unordered_set<t_value> > > GenomeIndexReader::get_positions(vector
     // removing duplicate seeds
     sort( seeds_vec.begin(), seeds_vec.end() );
     seeds_vec.erase( unique( seeds_vec.begin(), seeds_vec.end() ), seeds_vec.end() );
-
     unordered_map<t_key, int> seed_map;
     for (int i = 0; i < seeds.size(); ++i) {
         for (int j = 0; j < seeds[i].size(); j++) {
@@ -25,15 +24,13 @@ vector<vector<unordered_set<t_value> > > GenomeIndexReader::get_positions(vector
         }
     }
 
-    //CAUTION: 1-indexed vector
-    vector < vector< vector<t_value> > > chromo_map_seeds_pos(NUM_CHROMOSOMES + 1);
-    for (int i = 1; i <= NUM_CHROMOSOMES; ++i) {
+    vector < vector< vector<t_value> > > chromo_map_seeds_pos(num_chromo + 1);
+    for (int i = 1; i <= num_chromo; ++i) {
         db.use_table(i);
         chromo_map_seeds_pos[i] = db.get(seeds_vec);
-        // TODO: implement h_max threshold in the batch_set function. Read more at OneNote
     }
 
-    vector<vector<unordered_set<t_value> > > reads_chromo_pos_set(reads.size(), vector<unordered_set<t_value> > (NUM_CHROMOSOMES + 1));
+    vector<vector<unordered_set<t_value> > > reads_chromo_pos_set(reads.size(), vector<unordered_set<t_value> > (num_chromo + 1));
 
     for (int r = 0; r < reads.size(); ++r) {
         // seperate case for last seed index
@@ -41,7 +38,7 @@ vector<vector<unordered_set<t_value> > > GenomeIndexReader::get_positions(vector
         for (s_idx = 0; s_idx < seeds[r].size() - 1; ++s_idx) {
             t_key seed_temp = seeds[r][s_idx];
             mapped_s_idx = seed_map[seed_temp];
-            for (int c = 1; c <= NUM_CHROMOSOMES; ++c) {
+            for (int c = 1; c <= num_chromo; ++c) {
                 for (int p = 0; p < chromo_map_seeds_pos[c][mapped_s_idx].size(); ++p) {
                     // correct positions by compensating for the offset
                     int pos = chromo_map_seeds_pos[c][mapped_s_idx][p];
@@ -58,7 +55,7 @@ vector<vector<unordered_set<t_value> > > GenomeIndexReader::get_positions(vector
         mapped_s_idx = seed_map[seed_temp];
         int mod = reads[r].size() % seed_len;
         int val = reads[r].size() / seed_len - 1;
-        for (int c = 1; c <= NUM_CHROMOSOMES; ++c) {
+        for (int c = 1; c <= num_chromo; ++c) {
             for (int p = 0; p < chromo_map_seeds_pos[c][mapped_s_idx].size(); ++p) {
                 // correct positions by compensating for the offset
                 int pos = chromo_map_seeds_pos[c][mapped_s_idx][p];
