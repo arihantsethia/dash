@@ -43,7 +43,7 @@ void ReadAligner::align_read(string& read, vector < unordered_set<t_value> >& ch
             if (d_curr == -1) {
                 continue;
             }
-            
+
             cout << "ED=" << d_curr << endl;
             if (d_curr < d_best) {
                 if (d_best != INF)

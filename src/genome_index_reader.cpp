@@ -5,7 +5,7 @@ GenomeIndexReader::GenomeIndexReader(int seed_len) : GenomeIndex(seed_len) {}
 vector<vector<unordered_set<t_value> > > GenomeIndexReader::get_positions(vector<string>& reads) {
     vector<vector<t_key> > seeds(reads.size());
     vector<t_key> seeds_vec;
-    seeds_vec.reserve(reads.size());    //reserving some space so as to reduce resizing a bit
+    seeds_vec.reserve(reads.size());
     Seeds s(seed_len);
     for (int i = 0; i < reads.size(); i++) {
         vector<t_key> temp = s.get_seeds(reads[i]);
@@ -20,7 +20,6 @@ vector<vector<unordered_set<t_value> > > GenomeIndexReader::get_positions(vector
     unordered_map<t_key, int> seed_map;
     for (int i = 0; i < seeds.size(); ++i) {
         for (int j = 0; j < seeds[i].size(); j++) {
-            // TODO: add check if s_temp already in map?
             auto low = lower_bound (seeds_vec.begin(), seeds_vec.end(), seeds[i][j]);
             seed_map[seeds[i][j]] = low - seeds_vec.begin();
         }
@@ -46,7 +45,7 @@ vector<vector<unordered_set<t_value> > > GenomeIndexReader::get_positions(vector
                 for (int p = 0; p < chromo_map_seeds_pos[c][mapped_s_idx].size(); ++p) {
                     // correct positions by compensating for the offset
                     int pos = chromo_map_seeds_pos[c][mapped_s_idx][p];
-                    cout<<pos<<",";
+                    cout << pos << ",";
                     // save read pos only if the following quantity >= 0
                     int offset_pos = pos - s_idx * seed_len;
                     reads_chromo_pos_set[r][c].insert(max(0, offset_pos));
@@ -63,7 +62,7 @@ vector<vector<unordered_set<t_value> > > GenomeIndexReader::get_positions(vector
             for (int p = 0; p < chromo_map_seeds_pos[c][mapped_s_idx].size(); ++p) {
                 // correct positions by compensating for the offset
                 int pos = chromo_map_seeds_pos[c][mapped_s_idx][p];
-                cout<<pos<<",";
+                cout << pos << ",";
                 // save seed pos only if the following quantity >= 0
                 int offset_pos = pos - val * seed_len - mod;
                 reads_chromo_pos_set[r][c].insert(max(0, offset_pos));
@@ -71,7 +70,7 @@ vector<vector<unordered_set<t_value> > > GenomeIndexReader::get_positions(vector
         }
     }
 
-    return reads_chromo_pos_set;    //CAUTION: 1-indexed vector at second level
+    return reads_chromo_pos_set;
 
 }
 

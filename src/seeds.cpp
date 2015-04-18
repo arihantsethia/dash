@@ -13,7 +13,7 @@ vector<t_key> Seeds::get_seeds(string rd) {
         seeds[pos] = hash.get_hash(temp);
         pos++;
     }
-    
+
     // insert last seed into vector explicitly
     // done to handle irregular division cases and perfect division cases
     // without unnecessary condition checks and code duplication

@@ -10,7 +10,7 @@ using namespace std;
 class Aligner {
 private:
     int seed_len;
-    
+
 public:
     Aligner(int seed_len = SEED_LEN);
     void align(vector<string>& reads);

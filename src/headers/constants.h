@@ -9,7 +9,7 @@ static const string PATH = "dash_files";
 
 static const int NUM_THREADS = 1;
 static const int NUM_CHROMOSOMES = 2;
-static const int INDEX_WIDTH = 3;   //chromosome_005, width of the index
+static const int PAD_WIDTH = 3;
 
 static const string DB_PATH = PATH + PATH_SEPERATOR + "db";
 static const string DB_NAME = "dash_db";
@@ -28,7 +28,8 @@ static const int JOB_LEN = 10000000;
 static const int INDEX_THRESHOLD_LIMIT = 200;
 
 static const int CONFIDENCE_THRESHOLD = 10;     // min. diff in edit distance scores between best and second best
-static const int MAX_HITS = 10;     //max index locations in db to check for a seed
-static const int MAX_EDIT_DIST = 20;    //max tolerable edit dist. between read and reference sequence
+static const int MAX_HITS = 10;                 //max index locations in db to check for a seed
+static const int MAX_EDIT_DIST = 20;            //max tolerable edit dist. between read and reference sequence
 
+static const string PROP_SEPARATOR = ":";
 #endif

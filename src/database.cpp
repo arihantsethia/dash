@@ -96,7 +96,7 @@ void Database::batch_put(key_value_map* data, key_value_map::iterator start, key
                     continue;
                 }
                 values = new t_value[pos + val_length];
-                copy(values,(t_value*)(o_value->data),pos);/*
+                copy(values, (t_value*)(o_value->data), pos);/*
                 for(int i=0;i<pos;i++)
                     values[i] = ((t_value*)(o_value->data))[i];*/
                 delete[] (t_value*)(o_value->data);
@@ -274,6 +274,6 @@ void Database::batch_remove(vector<t_key>* keys, size_t start, size_t end) {
 }
 
 Database::~Database() {
-    if(db)
+    if (db)
         close_database();
 }

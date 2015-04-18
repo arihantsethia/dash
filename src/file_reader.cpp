@@ -3,7 +3,7 @@
 FileReader::FileReader() : fin_array(NUM_CHROMOSOMES + 1) {
     try {
         for (int i = 1; i <= NUM_CHROMOSOMES; i++ ) {
-            chromosome_path = GENOME_PATH + CHROMOSOME_PREFIX + pad(i, INDEX_WIDTH);
+            chromosome_path = GENOME_PATH + CHROMOSOME_PREFIX + pad(i, PAD_WIDTH);
             cout << chromosome_path << endl;
             fin_array[i].open(chromosome_path, ifstream::binary);
             if (!fin_array[i].is_open()) {
@@ -14,9 +14,8 @@ FileReader::FileReader() : fin_array(NUM_CHROMOSOMES + 1) {
     catch (ifstream::failure e) {
         cerr << "Exception in file opening:" << endl;
     }
-
 }
-// returns empty string is it fails to find a sequence in chromosome
+
 string FileReader::get_DNA_sequence(int id, t_value pos, int read_len) {
     fin_array[id].seekg(pos, fin_array[id].beg);
     cout << pos << " " << read_len << " " << endl;
@@ -26,7 +25,7 @@ string FileReader::get_DNA_sequence(int id, t_value pos, int read_len) {
     string dna_seq = "";
     fin_array[id].read(seq, read_len);
     dna_seq.assign(seq);
-    
+
     fin_array[id].clear();
     delete[] seq;
     return dna_seq;

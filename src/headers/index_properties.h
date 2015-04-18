@@ -11,10 +11,9 @@ private:
 public:
     IndexProperties(string index_prop_file = INDEX_PROP_FILE);
     void read_file();
-    void write_file();  //TODO: implement this func. Discuss with Arihant where to use it
+    void write_file();
     string get_property(string key);
     void put_property(string key, string val);
-
 };
 
 #endif

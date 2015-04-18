@@ -1,5 +1,5 @@
 #ifndef GENOME_INDEX_WRITER
-#define GENOME_INDEX_WRITER 
+#define GENOME_INDEX_WRITER
 
 #include "util.h"
 #include "genome_index.h"

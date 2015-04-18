@@ -1,8 +1,6 @@
 #include "headers/index_properties.h"
 
-IndexProperties::IndexProperties(string index_prop_file) : index_prop_file(index_prop_file) {
-    read_file();
-}
+IndexProperties::IndexProperties(string index_prop_file) : index_prop_file(index_prop_file) {}
 
 void IndexProperties::read_file() {
     ifstream fin;
@@ -11,7 +9,7 @@ void IndexProperties::read_file() {
         string line;
         while (getline(fin, line))
         {
-            std::vector<string> tokens = tokenize(line, "\t");
+            std::vector<string> tokens = tokenize(line, PROP_SEPARATOR);
             assert(tokens.size() >= 2); // TODO: throw an exception
             prop_map[tokens[0]] = tokens[1];
         }
@@ -30,7 +28,7 @@ void IndexProperties::write_file() {
     try {
         fout.open(index_prop_file, ios_base::trunc);
         for (auto& e : prop_map) {
-            fout << e.first << "\t" << e.second << endl;
+            fout << e.first << PROP_SEPARATOR << e.second << endl;
         }
         fout.close();
     }
@@ -43,6 +41,7 @@ void IndexProperties::write_file() {
 }
 
 string IndexProperties::get_property(string key) {
+    transform(key.begin(), key.end(), key.begin(), ::toupper);
     if (prop_map.find(key) != prop_map.end()) {
         return prop_map[key];
     }
@@ -52,5 +51,6 @@ string IndexProperties::get_property(string key) {
 }
 
 void IndexProperties::put_property(string key, string val) {
+    transform(key.begin(), key.end(), key.begin(), ::toupper);
     prop_map[key] = val;
 }

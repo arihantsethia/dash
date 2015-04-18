@@ -8,11 +8,11 @@ class FileReader
 {
 private:
     string chromosome_path;
-    vector<ifstream> fin_array; //1 indexed
+    vector<ifstream> fin_array;
 public:
     FileReader();
     string get_DNA_sequence(int id, t_value pos, int read_len);
     ~FileReader();
-    
+
 };
 #endif
