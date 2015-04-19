@@ -69,7 +69,7 @@ void aligner(string in, string out, int threads, int edit_dist, int conf, string
 
     vector<string> reads = get_reads(in);
 
-    Aligner a(seed_len_read, threads, edit_dist, conf, num_chromo);
+    Aligner a(num_chromo, seed_len_read, threads, edit_dist, conf);
     a.align(reads);
 }
 

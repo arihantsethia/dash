@@ -10,7 +10,7 @@ void GenomeIndexWriter::write_index(string filename, t_value pos) {
 
     db.use_table(chromo_id);
 
-    FileBuffer fb(filename);
+    FileBuffer fb(filename, seed_len);
     int x = 0;
     vector<key_value> data;
     while (fb.has_next()) {

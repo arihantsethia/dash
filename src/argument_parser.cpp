@@ -2,6 +2,8 @@
 
 ArgumentParser::ArgumentParser() {
     index = align = distributed = false;
+    seed_len = threads = conf = edit_dist = -1;
+    genome, in, out, usage = "";
 }
 
 int ArgumentParser::parse_args(int argc, char* argv[]) {

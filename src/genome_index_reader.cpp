@@ -1,6 +1,6 @@
 #include "headers/genome_index_reader.h"
 
-GenomeIndexReader::GenomeIndexReader(int seed_len, int threads, int num_chromo) : GenomeIndex(seed_len, threads), num_chromo(num_chromo) {}
+GenomeIndexReader::GenomeIndexReader(int num_chromo, int seed_len, int threads) : GenomeIndex(seed_len, threads), num_chromo(num_chromo) {}
 
 vector<vector<unordered_set<t_value> > > GenomeIndexReader::get_positions(vector<string>& reads) {
     vector<vector<t_key> > seeds(reads.size());

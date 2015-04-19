@@ -7,8 +7,7 @@
 static const string PATH_SEPERATOR = get_path_seperator();
 static const string PATH = "dash_files";
 
-static const int NUM_THREADS = 1;
-static const int NUM_CHROMOSOMES = 2;
+static const int NUM_THREADS = 4;
 static const int PAD_WIDTH = 3;
 
 static const string DB_PATH = PATH + PATH_SEPERATOR + "db";

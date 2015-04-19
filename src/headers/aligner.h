@@ -12,7 +12,7 @@ private:
     int seed_len, num_chromo, threads, ed_threshold, conf;
 
 public:
-    Aligner(int seed_len = SEED_LEN, int threads = NUM_THREADS, int ed_threshold = MAX_EDIT_DIST, int conf = CONFIDENCE_THRESHOLD, int num_chromo = NUM_CHROMOSOMES );
+    Aligner(int num_chromo, int seed_len = SEED_LEN, int threads = NUM_THREADS, int ed_threshold = MAX_EDIT_DIST, int conf = CONFIDENCE_THRESHOLD);
     void align(vector<string>& reads);
 };
 #endif

@@ -2,7 +2,7 @@
 
 const int INF = numeric_limits<int>::max();
 
-ReadAligner::ReadAligner(int ed_threshold, int conf, int num_chromo): ed_threshold(ed_threshold), conf(conf), num_chromo(num_chromo) {}
+ReadAligner::ReadAligner(int num_chromo, int ed_threshold, int conf): ed_threshold(ed_threshold), conf(conf), num_chromo(num_chromo), fr(num_chromo) {}
 
 /*
 * for the given read, finds the best, second best alignments

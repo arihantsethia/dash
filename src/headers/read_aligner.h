@@ -31,6 +31,6 @@ public:
     int best_chromo;
 
     void align_read(string& read, vector < unordered_set<t_value> >& chromo_pos);
-    ReadAligner(int ed_threshold = MAX_EDIT_DIST, int conf = CONFIDENCE_THRESHOLD, int num_chromo = NUM_CHROMOSOMES);
+    ReadAligner(int num_chromo, int ed_threshold = MAX_EDIT_DIST, int conf = CONFIDENCE_THRESHOLD);
 };
 #endif

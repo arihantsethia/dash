@@ -11,7 +11,7 @@ private:
     vector<ifstream> fin_array;
     int num_chromo;
 public:
-    FileReader(int num_chromo = NUM_CHROMOSOMES);
+    FileReader(int num_chromo);
     string get_DNA_sequence(int id, t_value pos, int read_len);
     ~FileReader();
 

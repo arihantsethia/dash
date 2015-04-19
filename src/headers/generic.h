@@ -32,7 +32,7 @@ using namespace std;
 
 typedef long long ll;
 typedef unsigned long long ull;
-typedef ll t_key;
+typedef ull t_key;
 typedef unsigned int t_value;
 typedef pair<t_key, t_value> key_value;
 typedef unordered_map<t_key, vector<t_value> > key_value_map;
