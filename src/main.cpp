@@ -44,11 +44,11 @@ void indexer(string genome, int seed_len, int threads) {
 
 void aligner(string in, string out, int threads, int edit_dist, int conf) {
     IndexProperties ip;
-    SAM sam;
     ip.read_file();
     int seed_len_read = stoi(ip.get_property(SEED_LEN_PROP));
     int num_chromo = stoi(ip.get_property(NUM_CHROMO_PROP));
 
+    SAM sam;
     sam.read_file(in);
 
     Aligner a(num_chromo, ip, seed_len_read, threads, edit_dist, conf);

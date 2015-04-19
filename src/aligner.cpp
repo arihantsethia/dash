@@ -16,9 +16,11 @@ void Aligner::align(vector<fq>& reads) {
             reads[r].rname = ip.get_property(CHROMOSOME_PREFIX + pad(read_aligner.best_chromo, PAD_WIDTH));
             reads[r].pos =  read_aligner.best_pos + stoi(ip.get_property(CHROMOSOME_OFFSET + pad(read_aligner.best_chromo, PAD_WIDTH)));
             reads[r].NM = "NM:i:" + istr(read_aligner.d_best);
+            reads[r].AS = "AS:i:" + istr(read_aligner.d_best);
         } else {
             reads[r].pos = 0;
             reads[r].NM = "*";
+            reads[r].AS = "*";
         }
     }
 }

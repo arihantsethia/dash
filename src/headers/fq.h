@@ -10,7 +10,7 @@ struct fq {
     string qname;
 
     //flags is a bit field encoding some yes/no pieces of information about whether and how the read aligned
-    string flags;
+    int flags;
 
     //rname is the name of the reference sequence that the read aligned to (if applicable). E.g., might be "chr17" meaning "chromosome 17"
     string rname;

@@ -8,7 +8,7 @@ vector<t_key> Seeds::get_seeds(string rd) {
     //insert all seeds into vector except last one
     for (int i = 0; i < n - 1; i++) {
         for (int j = 0; j < seed_len; ++j) {
-            temp[j] = rd[i * seed_len + j];
+            temp[j] = tolower(rd[i * seed_len + j]);
         }
         seeds[pos] = hash.get_hash(temp);
         pos++;
@@ -18,7 +18,7 @@ vector<t_key> Seeds::get_seeds(string rd) {
     // done to handle irregular division cases and perfect division cases
     // without unnecessary condition checks and code duplication
     for (int i = 0; i < seed_len ; ++i) {
-        temp[seed_len - i - 1] = rd[rd.size() - i - 1];
+        temp[seed_len - i - 1] = tolower(rd[rd.size() - i - 1]);
     }
     seeds[pos] = hash.get_hash(temp);
     return seeds;

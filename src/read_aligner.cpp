@@ -19,14 +19,12 @@ void ReadAligner::align_read(string& read, vector < unordered_set<t_value> >& ch
     alignment_status = NO_HITS;
 
     for (int c = 1; c <= num_chromo; ++c) {
-        cout << "#" << c << endl;
         for (auto& p : chromo_pos[c]) {
             string dna_seq = fr.get_DNA_sequence(c, p, read.size());
 
             if (dna_seq == "") {
                 continue;
             }
-            cout << "DNA: " << dna_seq << endl;
 
             if (d_best > ed_threshold) {
                 d_limit = ed_threshold + conf - 1;
@@ -44,7 +42,6 @@ void ReadAligner::align_read(string& read, vector < unordered_set<t_value> >& ch
                 continue;
             }
 
-            cout << "ED=" << d_curr << endl;
             if (d_curr < d_best) {
                 if (d_best != INF)
                     d_second = d_best;

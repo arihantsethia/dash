@@ -17,11 +17,12 @@ class Dash(object):
         datasource = self._get_dict(input_file, meta)
         def mapfn(k, v):
             import subprocess
-            edit_distance, confidence, n_threads = k.split()[1:]
-            ifile_name = "dash_"+str(k)+".fq"
-            ofile_name = "dash_"+str(k)+".sam"
+            id,edit_distance, confidence, n_threads = k.split()
+            ifile_name = "dash_"+id+".fq"
+            ofile_name = "dash_"+id+".sam"
             ifile = open(ifile_name, "w")
             ifile.write(str(v));
+            ifile.close();
             args = ['./dashc++', '--align','--i='+ifile_name, '--o='+ofile_name,'--e='+edit_distance,'--c='+confidence, '--t='+n_threads ]
             subprocess.call(args)
             with open(ofile_name, 'r') as content_file:

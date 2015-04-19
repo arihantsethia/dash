@@ -42,7 +42,6 @@ vector<vector<unordered_set<t_value> > > GenomeIndexReader::get_positions(vector
                 for (int p = 0; p < chromo_map_seeds_pos[c][mapped_s_idx].size(); ++p) {
                     // correct positions by compensating for the offset
                     int pos = chromo_map_seeds_pos[c][mapped_s_idx][p];
-                    cout << pos << ",";
                     // save read pos only if the following quantity >= 0
                     int offset_pos = pos - s_idx * seed_len;
                     reads_chromo_pos_set[r][c].insert(max(0, offset_pos));
@@ -59,7 +58,6 @@ vector<vector<unordered_set<t_value> > > GenomeIndexReader::get_positions(vector
             for (int p = 0; p < chromo_map_seeds_pos[c][mapped_s_idx].size(); ++p) {
                 // correct positions by compensating for the offset
                 int pos = chromo_map_seeds_pos[c][mapped_s_idx][p];
-                cout << pos << ",";
                 // save seed pos only if the following quantity >= 0
                 int offset_pos = pos - val * seed_len - mod;
                 reads_chromo_pos_set[r][c].insert(max(0, offset_pos));
