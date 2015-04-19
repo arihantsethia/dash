@@ -33,4 +33,5 @@ static const int MAX_EDIT_DIST = 8;            //max tolerable edit dist. betwee
 
 static const string CHROMOSOME_OFFSET = "chromosome_offset_";
 static const string PROP_SEPARATOR = ":";
+
 #endif
