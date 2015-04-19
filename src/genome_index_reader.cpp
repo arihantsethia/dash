@@ -2,13 +2,13 @@
 
 GenomeIndexReader::GenomeIndexReader(int num_chromo, int seed_len, int threads) : GenomeIndex(seed_len, threads), num_chromo(num_chromo) {}
 
-vector<vector<unordered_set<t_value> > > GenomeIndexReader::get_positions(vector<string>& reads) {
+vector<vector<unordered_set<t_value> > > GenomeIndexReader::get_positions(vector<fq>& reads) {
     vector<vector<t_key> > seeds(reads.size());
     vector<t_key> seeds_vec;
     seeds_vec.reserve(reads.size());
     Seeds s(seed_len);
     for (int i = 0; i < reads.size(); i++) {
-        vector<t_key> temp = s.get_seeds(reads[i]);
+        vector<t_key> temp = s.get_seeds(reads[i].seq);
         seeds[i] = temp;
         seeds_vec.insert(seeds_vec.end(), temp.begin(), temp.end());
     }
@@ -53,8 +53,8 @@ vector<vector<unordered_set<t_value> > > GenomeIndexReader::get_positions(vector
         // for last seed
         t_key seed_temp = seeds[r][s_idx];
         mapped_s_idx = seed_map[seed_temp];
-        int mod = reads[r].size() % seed_len;
-        int val = reads[r].size() / seed_len - 1;
+        int mod = reads[r].seq.size() % seed_len;
+        int val = reads[r].seq.size() / seed_len - 1;
         for (int c = 1; c <= num_chromo; ++c) {
             for (int p = 0; p < chromo_map_seeds_pos[c][mapped_s_idx].size(); ++p) {
                 // correct positions by compensating for the offset

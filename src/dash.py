@@ -15,7 +15,6 @@ class Dash(object):
     def run_master(self, input_file, output_file, edit_distance, confidence, port, num_threads):
         meta = ' '.join(map(str, [edit_distance, confidence, num_threads]))
         datasource = self._get_dict(input_file, meta)
-        print datasource
         def mapfn(k, v):
             import subprocess
             edit_distance, confidence, n_threads = k.split()[1:]
@@ -98,5 +97,3 @@ if __name__ == '__main__':
         elif(args.map_reduce_mode=='slave'):
             print "Map-reduce slave created"
             dash.run_slave(args.ip, args.port, args.threads)
-
-

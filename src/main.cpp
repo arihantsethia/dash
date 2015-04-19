@@ -10,33 +10,13 @@
 #include "headers/aligner.h"
 #include "headers/index_properties.h"
 #include "headers/argument_parser.h"
-
-using namespace std;
+#include "headers/fq.h"
+#include "headers/SAM.h"
 
 void initialize_dash_dirs() {
     mkdir(cstr(PATH), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
     mkdir(cstr(GENOME_PATH), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
     mkdir(cstr(DB_PATH), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
-}
-
-vector<string> get_reads(string in) {
-    vector<string> reads;
-    ifstream fin;
-    try {
-        fin.open(in);
-        string line;
-        while (getline(fin, line)) {
-            reads.push_back(line);
-        }
-        fin.close();
-    }
-    catch (ifstream::failure e) {
-        cerr << "Exception in file reading" << in << endl;
-        if (fin.is_open()) {
-            fin.close();
-        }
-    }
-    return reads;
 }
 
 void indexer(string genome, int seed_len, int threads) {
@@ -64,19 +44,16 @@ void indexer(string genome, int seed_len, int threads) {
 
 void aligner(string in, string out, int threads, int edit_dist, int conf) {
     IndexProperties ip;
+    SAM sam;
     ip.read_file();
     int seed_len_read = stoi(ip.get_property(SEED_LEN_PROP));
     int num_chromo = stoi(ip.get_property(NUM_CHROMO_PROP));
 
-    vector<string> reads = get_reads(in);
+    sam.read_file(in);
 
-    Aligner a(num_chromo, seed_len_read, threads, edit_dist, conf);
-    a.align(reads);
-    // use this ip.put_property(CHROMOSOME_OFFSET + pad(i, PAD_WIDTH) , istr(offsets[i - 1]));
-    // and add
-    ofstream fout(out);
-    fout<<"Some Shit"<<endl;
-    fout.close();
+    Aligner a(num_chromo, ip, seed_len_read, threads, edit_dist, conf);
+    a.align(sam.reads);
+    sam.write_sam(out);
 }
 
 void parse_error(ArgumentParser &ap) {
@@ -102,8 +79,6 @@ int main(int argc, char *argv[]) {
                 || ap.conf <= 0 ) {
             parse_error(ap);
         } else {
-            //TODO: what to do with distributed option?
-            //TODO: what to do with mode?
             aligner(ap.in, ap.out, ap.threads, ap.edit_dist, ap.conf);
         }
     }
