@@ -3,7 +3,7 @@
 ArgumentParser::ArgumentParser() {
     index = align = distributed = false;
     seed_len = threads = conf = edit_dist = -1;
-    genome, in, out, usage = "";
+    genome, in, out = "";
 }
 
 int ArgumentParser::parse_args(int argc, char* argv[]) {
@@ -17,7 +17,6 @@ int ArgumentParser::parse_args(int argc, char* argv[]) {
             {"d", 0, NULL, 0},
             {"i", 1, NULL, 0},
             {"o", 1, NULL, 0},
-            {"u", 1, NULL, 0},
             {"e", 1, NULL, 0},
             {"c", 1, NULL, 0},
             {"help", 0, NULL, 0},
@@ -46,8 +45,6 @@ int ArgumentParser::parse_args(int argc, char* argv[]) {
             in = strdup (optarg);
         else if (strcmp (lopts[idx].name, "o") == 0)
             out = strdup (optarg);
-        else if (strcmp (lopts[idx].name, "u") == 0)
-            usage = strdup (optarg);
         else if (strcmp (lopts[idx].name, "l") == 0)
             seed_len = atoi (optarg);
         else if (strcmp (lopts[idx].name, "t") == 0)
@@ -62,14 +59,6 @@ int ArgumentParser::parse_args(int argc, char* argv[]) {
         }
         else assert (false);
     }
-
-    // /* return the execute command */
-    // if (optind == argc) {
-    //     //fprintf (stderr, "No program name given.\n");
-    //     cout<<"DF"<<endl;
-    //     print_usage ();
-    //     exit (0);
-    // }
 
     return optind;
 }
@@ -93,7 +82,6 @@ void ArgumentParser::print_usage() {
         "--o=<file>       output file path \n"
         "--t=<integer>     number of threads  \n"
         "--d                  if this option is specified, MapReduce version will be used \n"
-        "--u=<mode>          <mode> = master or <mode> = client. Valid only with --dist option \n"
         "--e=<integer>    max tolerable edit distance between read and reference sequence \n"
         "--c=<integer>        min. diff in edit distance scores between best and second best\n"
         "--help                display this help page           \n"

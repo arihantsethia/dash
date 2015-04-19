@@ -29,9 +29,12 @@ void SAM::read_file(string fq_name) {
 void SAM::write_sam(string sam_write) {
     ofstream sam (cstr(sam_write));
     sam << HEADER << CO;
-    for (int i = 0; i < (this->reads).size(); i++) {
+    for (int i = 0; i < reads.size(); i++) {
         //cout << this->reads[i].seq_ID << " " << this->reads[i].seq << " " << this->reads[i].quality_string << endl;
-        sam << this->reads[i].seq_ID << "\t" << this->reads[i].flags << "\t" << this->reads[i].rname << "\t" << this->reads[i].pos << "\t" << this->reads[i].mapq << "\t" << this->reads[i].cigar << "\t" << this->reads[i].seq << "\t" << this->reads[i].quality_string << "\t" << this->reads[i].NM << "\t" << this->reads[i].AS << "\t" << this->reads[i].MD << "\t" << this->reads[i].XS << endl;
+        sam << reads[i].seq_ID << "\t" << reads[i].flags << "\t" << reads[i].rname << "\t";
+        sam << reads[i].pos << "\t" << reads[i].mapq << "\t" << reads[i].cigar << "\t";
+        sam << reads[i].seq << "\t" << reads[i].quality_string << "\t" << reads[i].NM << "\t";
+        sam << reads[i].AS << "\t" << reads[i].MD << "\t" << reads[i].XS << endl;
     }
     //chr1_188832065_188832164_0:3:1_0:1:1_1  0       chr1    188832065       60      76M1D24M        *       0       0       GAATAAAAAAATTCTTGATGTTATTTTAATCTTCTTAAGTTGTTATGTCTTGTTTTGTGACCAAGTATACACTATGCCCAGAGAATGTTGTTTTTACTCT    IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII    NM:i:4  MD:Z:3A8G63^C13C10      AS:i:79 XS:i:20
     sam.close();

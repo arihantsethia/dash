@@ -4,10 +4,9 @@
 #include "constants.h"
 using namespace std;
 
-class ArgumentParser
-{
+class ArgumentParser {
 public:
-    string genome, in, out, usage;
+    string genome, in, out;
     int seed_len, threads, edit_dist, conf;
     bool index, align, distributed;
     
