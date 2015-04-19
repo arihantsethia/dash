@@ -24,7 +24,7 @@ void Database::close_database() {
 void Database::use_table(int id) {
     close_table();
     tbl = db->gettable(cstr(TABLE_PREFIX + istr(id)), OPENCREATE, NULL);
-    b_tbl = db->gettable(cstr(TABLE_BLACKLIST_PREFIX + istr(id)), OPENCREATE, NULL);
+    b_tbl = db->gettable(cstr(TABLE_BLACKLIST), OPENCREATE, NULL);
 }
 
 void Database::close_table() {
@@ -43,7 +43,6 @@ void Database::blacklist_key(FDT* key, connection* conn, connection* b_conn) {
     bool is_blacklisted = true;
     FDT* val = new FDT(&is_blacklisted, sizeof(bool));
     b_conn->put(key, val, INSERT_UNIQUE);
-    conn->del(key);
 }
 
 void Database::put(key_value data) {

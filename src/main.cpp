@@ -48,11 +48,12 @@ void indexer(string genome, int seed_len, int threads) {
     vector<t_value> offsets = g.get_offsets();
     for (int i = 1; i <= chromosomes.size(); i++) {
         ip.put_property(CHROMOSOME_PREFIX + pad(i, PAD_WIDTH) , chromosomes[i - 1]);
+        ip.put_property(CHROMOSOME_OFFSET + pad(i, PAD_WIDTH) , istr(offsets[i - 1]));
     }
 
     GenomeIndexWriter giw(seed_len, threads);
     for (int i = 1; i <= chromosomes.size(); ++i) {
-        giw.write_index(GENOME_PATH + CHROMOSOME_PREFIX + pad(i, PAD_WIDTH), offsets[i-1]);
+        giw.write_index(GENOME_PATH + CHROMOSOME_PREFIX + pad(i, PAD_WIDTH));
     }
 
     giw.close_index();
@@ -71,6 +72,8 @@ void aligner(string in, string out, int threads, int edit_dist, int conf, string
 
     Aligner a(num_chromo, seed_len_read, threads, edit_dist, conf);
     a.align(reads);
+    // use this ip.put_property(CHROMOSOME_OFFSET + pad(i, PAD_WIDTH) , istr(offsets[i - 1]));
+    // and add
 }
 
 void parse_error(ArgumentParser &ap) {

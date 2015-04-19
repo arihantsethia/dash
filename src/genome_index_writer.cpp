@@ -2,7 +2,7 @@
 
 GenomeIndexWriter::GenomeIndexWriter(int seed_len, int threads) : GenomeIndex(seed_len, threads) {}
 
-void GenomeIndexWriter::write_index(string filename, t_value pos) {
+void GenomeIndexWriter::write_index(string filename) {
     vector<string> tokens = tokenize(filename, "_");
     int chromo_id = stoi(tokens.back());
 
@@ -12,6 +12,7 @@ void GenomeIndexWriter::write_index(string filename, t_value pos) {
 
     FileBuffer fb(filename, seed_len);
     int x = 0;
+    t_value pos = 0;
     vector<key_value> data;
     while (fb.has_next()) {
         cout << "Reading chromosome..." << endl;
