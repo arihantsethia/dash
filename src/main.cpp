@@ -62,7 +62,7 @@ void indexer(string genome, int seed_len, int threads) {
     ip.write_file();
 }
 
-void aligner(string in, string out, int threads, int edit_dist, int conf, string usage) {
+void aligner(string in, string out, int threads, int edit_dist, int conf) {
     IndexProperties ip;
     ip.read_file();
     int seed_len_read = stoi(ip.get_property(SEED_LEN_PROP));
@@ -74,6 +74,9 @@ void aligner(string in, string out, int threads, int edit_dist, int conf, string
     a.align(reads);
     // use this ip.put_property(CHROMOSOME_OFFSET + pad(i, PAD_WIDTH) , istr(offsets[i - 1]));
     // and add
+    ofstream fout(out);
+    fout<<"Some Shit"<<endl;
+    fout.close();
 }
 
 void parse_error(ArgumentParser &ap) {
@@ -96,12 +99,12 @@ int main(int argc, char *argv[]) {
     }
     else if (ap.align) {
         if (ap.out == "" || ap.in == "" || ap.threads <= 0 || ap.edit_dist < 0 \
-                || ap.conf <= 0 || !(ap.usage == "master" || ap.usage == "client")) {
+                || ap.conf <= 0 ) {
             parse_error(ap);
         } else {
             //TODO: what to do with distributed option?
             //TODO: what to do with mode?
-            aligner(ap.in, ap.out, ap.threads, ap.edit_dist, ap.conf, ap.usage);
+            aligner(ap.in, ap.out, ap.threads, ap.edit_dist, ap.conf);
         }
     }
     else {

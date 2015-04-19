@@ -1,6 +1,6 @@
 #### PROJECT SETTINGS ####
 # The name of the executable to be created
-BIN_NAME := dash
+BIN_NAME := dashc++
 # Compiler used
 CXX ?= g++
 # Extension of source files used in the project
@@ -73,6 +73,7 @@ export DB_CONFIG := db_config
 export DB_CONFIG_FILE := bangdb.config
 export LIB := lib
 export BANG_LIB = lib/libbangdb.so
+export DASH_PY = src/dash.py
 
 # Find all source files in the source directory, sorted by most
 # recently modified
@@ -154,8 +155,8 @@ dirs:
 	@echo "Creating directories"
 	@mkdir -p $(dir $(OBJECTS))
 	@mkdir -p $(BIN_PATH)
-	@mkdir -p $(BIN_PATH)/$(LIB)
-	@cp $(BANG_LIB) $(BIN_PATH)/$(BANG_LIB)
+	@cp $(DASH_PY) $(BIN_PATH)
+	@cp -r $(LIB) $(BIN_PATH)
 	@mkdir -p $(BIN_PATH)/$(DASH_FILES)
 	@mkdir -p $(BIN_PATH)/$(DASH_FILES)/$(DB_CONFIG)
 	@cp $(DB_CONFIG)/$(DB_CONFIG_FILE) $(BIN_PATH)/$(DASH_FILES)/$(DB_CONFIG)/$(DB_CONFIG_FILE)
@@ -183,9 +184,6 @@ clean:
 
 # Main rule, checks the executable and symlinks to the output
 all: $(BIN_PATH)/$(BIN_NAME)
-	@echo "Making symlink: $(BIN_NAME) -> $<"
-	@$(RM) $(BIN_NAME)
-	@ln -s $(BIN_PATH)/$(BIN_NAME) $(BIN_NAME)
 
 # Link the executable
 $(BIN_PATH)/$(BIN_NAME): $(OBJECTS)
