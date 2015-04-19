@@ -34,4 +34,8 @@ static const int MAX_EDIT_DIST = 8;            //max tolerable edit dist. betwee
 static const string CHROMOSOME_OFFSET = "chromosome_offset_";
 static const string PROP_SEPARATOR = ":";
 
+static const string HEADER = "@HD\tVN:1.0\tSO:unknown\tGO:none\n";
+static const string CO = "@CO\tSome comment for the pal at the other end\n";
+static const int MATCH_FLAGS = 0;
+
 #endif
